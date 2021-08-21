@@ -24,17 +24,17 @@ function onYouTubeIframeAPIReady() {
 }
 
 function onPlayerReady(event) {
-    event.target.playVideo();
+    var control = document.getElementById('control');
+    control.classList.remove('disabled');
 }
 
-var done = false;
 function onPlayerStateChange(event) {
-    if (event.data == YT.PlayerState.PLAYING && !done) {
-        setTimeout(stopVideo, 6000);
-        done = true;
-    }
 }
 
-function stopVideo() {
-    player.stopVideo();
+function onPlayButton() {
+    player.playVideo();
+}
+
+function onPauseButton() {
+    player.pauseVideo();
 }
