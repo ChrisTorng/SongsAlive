@@ -7,5 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "ChrisTorng",
-  "license": "BSD-2-Clause License"
+  "license": "BSD-2-Clause License",
+  "devDependencies": {
+    "serve": "^12.0.0"
+  }
 }
