@@ -1,0 +1,11 @@
+{
+  "name": "songs-alive",
+  "version": "1.0.0",
+  "description": "Live remix video/audio songs sections.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ChrisTorng",
+  "license": "BSD-2-Clause License"
+}
