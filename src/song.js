@@ -10,7 +10,9 @@ fetch('songs/' + songId + '.json')
     });
 
 function processSong(song) {
-    const url = "https://www.youtube.com/watch?v=" + song.videoId;
+    document.title = song.title + ' - ' + document.title;
+
+    const url = 'https://www.youtube.com/watch?v=' + song.videoId;
 
     const titleAnchor = document.getElementById('title');
     titleAnchor.src = url;
