@@ -21,3 +21,8 @@ body {
     top: 10pt;
     right: 10pt;
 }
+
+.disabled {
+    opacity: 0.5 !important;
+    pointer-events:none;
+}
