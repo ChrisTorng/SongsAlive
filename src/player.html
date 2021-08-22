@@ -8,15 +8,25 @@
 
 <body>
     <div class="left-panel">
-        <h1 class="title">Songs Alive Player<br>
-            <a id="title" target="_blank"></a>
-        </h1>
+        <h1 class="title">Songs Alive Player<h1>
+        <h2 class="song-title"><a id="title" target="_blank"></a></h2>
     </div>
+
     <div id="player"></div>
 
     <div id="control" class="disabled">
         <button id="playButton" onclick="onPlayButton()">Play</button>
         <button id="pauseButton" onclick="onPauseButton()">Pause</button>
+    </div>
+
+    <div>
+        <ul id="sections">
+            <li>
+                <div>前奏</div>
+                <div>前奏</div>
+                <div>5.1 -> 7.2</div>
+            </li>
+        </ul>
     </div>
 
     <script src="youtube.js"></script>
