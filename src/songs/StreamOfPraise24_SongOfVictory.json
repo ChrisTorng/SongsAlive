@@ -4,10 +4,22 @@
     "title": "得勝的歌 - 讚美之泉 24 我相信",
     "sections": [
         {
+            "title": "起音",
+            "details": "起音",
+            "start": 0,
+            "end": 2.9
+        },
+        {
             "title": "前奏",
             "details": "前奏",
-            "start": 5.1,
-            "end": 7.2
+            "start": 2.9,
+            "end": 6.17
+        },
+        {
+            "title": "第一段",
+            "details": "不憑眼見, 求主給我立定眼光",
+            "start": 16.0,
+            "end": 22.65
         }
     ]
 }
