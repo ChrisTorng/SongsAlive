@@ -6,7 +6,7 @@ fetch('songs/' + songId + '.json')
     .then(result => processSong(result))
     .catch(err => {
         const player = document.getElementById('player');
-        player.innerText = 'Song ' + songId + ' not found';
+        player.innerText = err;
     });
 
 function processSong(song) {
