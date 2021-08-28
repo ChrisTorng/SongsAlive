@@ -143,15 +143,23 @@ function displayStatus() {
 
 var timerId;
 const skipTime = 0.1;
+
+var currentSection = 1;
+var nextSection = 1;
+
 function setCheckTimer() {
-    const endTime = song.sections[1].end;
+    const endTime = song.sections[currentSection].end;
     const currentTime = player.getCurrentTime();
     timerId = setTimeout(seekToNext, (endTime - currentTime - skipTime) * 1000);
     console.log(timestamp(), 'setCheckTimer', rightPadTo3Digits(currentTime), endTime);
 }
 
+function selectSection(section) {
+    nextSection = section;
+}
+
 function seekToNext() {
-    seekToSection(1);
+    seekToSection(nextSection);
 }
 
 function seekToSection(section) {
@@ -160,6 +168,7 @@ function seekToSection(section) {
     player.seekTo(gotoTime, true);
     const currentTime = player.getCurrentTime();
     console.log(timestamp(), 'seekToSection', section, rightPadTo3Digits(currentTime), gotoTime);
+    currentSection = nextSection;
 }
 
 var lastTimestamp = new Date();
