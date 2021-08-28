@@ -30,5 +30,20 @@ body {
 
 .disabled {
     opacity: 0.5 !important;
-    pointer-events:none;
+    pointer-events: none;
+}
+
+.sections {
+    list-style-type: none;
+}
+
+.sections > li {
+    float: left;
+    padding-left: 3pt;
+    padding-right: 3pt;
+    cursor: pointer;
+}
+
+.sections > li:hover {
+    background: lightblue;
 }
