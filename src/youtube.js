@@ -142,23 +142,24 @@ function displayStatus() {
 }
 
 var timerId;
+const skipTime = 0.1;
 function setCheckTimer() {
-    const endTime = song.sections[0].end;
+    const endTime = song.sections[1].end;
     const currentTime = player.getCurrentTime();
+    timerId = setTimeout(seekToNext, (endTime - currentTime - skipTime) * 1000);
     console.log(timestamp(), 'setCheckTimer', rightPadTo3Digits(currentTime), endTime);
-    timerId = setTimeout(seekToNext, (endTime - currentTime) * 1000);
 }
 
 function seekToNext() {
-    seekToSection(0);
+    seekToSection(1);
 }
 
 function seekToSection(section) {
     timerId = undefined;
     const gotoTime = song.sections[section].start;
+    player.seekTo(gotoTime, true);
     const currentTime = player.getCurrentTime();
     console.log(timestamp(), 'seekToSection', section, rightPadTo3Digits(currentTime), gotoTime);
-    player.seekTo(gotoTime, true);
 }
 
 var lastTimestamp = new Date();
