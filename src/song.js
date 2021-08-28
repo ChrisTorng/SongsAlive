@@ -13,6 +13,7 @@ function processSong(song) {
     loadPlayer(song);
     setTitle(song);
     setSections(song);
+    selectSection(nextSection);
 }
 
 function setTitle(song) {
