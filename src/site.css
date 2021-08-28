@@ -33,17 +33,19 @@ body {
     pointer-events: none;
 }
 
-.sections {
+#sections {
     list-style-type: none;
+    padding-left: 0;
 }
 
-.sections > li {
+#sections > li {
     float: left;
     padding-left: 3pt;
     padding-right: 3pt;
+    width: 80px;
     cursor: pointer;
 }
 
-.sections > li:hover {
+#sections > li:hover {
     background: lightblue;
 }
