@@ -121,7 +121,7 @@ function onError(event) {
 // }
 
 function onPlayButton() {
-    seekToSection(0);
+    seekToSection(nextSection);
     player.playVideo();
 }
 
@@ -156,10 +156,19 @@ function setCheckTimer() {
 
 function selectSection(section) {
     nextSection = section;
+    const nextSectionTitle = document.getElementById('nextSection');
+    nextSectionTitle.innerText = song.sections[nextSection].title +
+        ': ' + song.sections[nextSection].detail;
 }
 
 function seekToNext() {
     seekToSection(nextSection);
+
+    const allSections = document.getElementById('allSections');
+    if (allSections.innerText.length !== 0) {
+        allSections.innerText += ', '
+    }
+    allSections.innerText += song.sections[currentSection].title;
 }
 
 function seekToSection(section) {
