@@ -4,7 +4,7 @@
   "description": "Live remix video/audio songs sections.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "serve": "npx serve"
   },
   "author": "ChrisTorng",
   "license": "BSD-2-Clause License",
