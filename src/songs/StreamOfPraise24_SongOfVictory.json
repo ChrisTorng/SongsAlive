@@ -5,19 +5,19 @@
     "sections": [
         {
             "title": "起音",
-            "details": "起音",
+            "detail": "起音",
             "start": 0,
             "end": 2.9
         },
         {
             "title": "前奏",
-            "details": "前奏",
+            "detail": "前奏",
             "start": 2.9,
             "end": 6.17
         },
         {
             "title": "第一段",
-            "details": "不憑眼見, 求主給我立定眼光",
+            "detail": "不憑眼見, 求主給我祢的眼光",
             "start": 16.0,
             "end": 22.65
         }
