@@ -121,18 +121,24 @@ function onError(event) {
 // }
 
 function onPlayButton() {
-    seekToSection(nextSection);
-    player.playVideo();
+    clearTimer();
+    //seekToSection(nextSection);
+    //player.playVideo();
+    const startTime = song.sections[nextSection].start;
+    player.loadVideoById(song.videoId, startTime);
 }
 
 function onPauseButton() {
+    clearTimer();
+    player.pauseVideo();
+    displayStatus();
+}
+
+function clearTimer() {
     if (timerId) {
         clearTimeout(timerId);
         timerId = undefined;
     }
-
-    player.pauseVideo();
-    displayStatus();
 }
 
 function displayStatus() {
@@ -144,8 +150,8 @@ function displayStatus() {
 var timerId;
 const skipTime = 0.1;
 
-var currentSection = 1;
-var nextSection = 1;
+var currentSection = 0;
+var nextSection = 0;
 
 function setCheckTimer() {
     const endTime = song.sections[currentSection].end;
