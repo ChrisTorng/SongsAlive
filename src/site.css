@@ -53,19 +53,25 @@ body {
 }
 
 .allSections {
-    clear:left;
+    clear: left;
     height: 3em;
 }
 
-#sections {
+.sections {
+    overflow-y: scroll;
+}
+
+#sectionsList {
     float: left;
     list-style-type: none;
     padding-left: 0;
     margin-block-start: 0;
     margin-block-end: 0;
+    width: 1300px;
+    overflow-y: scroll;
 }
 
-#sections > li {
+#sectionsList > li {
     float: left;
     padding-left: 3pt;
     padding-right: 3pt;
@@ -73,7 +79,7 @@ body {
     cursor: pointer;
 }
 
-#sections > li:hover {
+#sectionsList > li:hover {
     background: lightblue;
 }
 

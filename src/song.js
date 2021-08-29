@@ -36,6 +36,6 @@ function setSections(song) {
             '</li>\n';
     }
 
-    const sections = document.getElementById('sections');
-    sections.innerHTML = sectionsHtml;
+    const sectionsList = document.getElementById('sectionsList');
+    sectionsList.innerHTML = sectionsHtml;
 }
