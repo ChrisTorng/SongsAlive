@@ -170,6 +170,7 @@ function selectSection(section) {
     nextSectionTitle.innerText = song.sections[nextSection].title;
     const nextSectionDetail = document.getElementById('nextSectionDetail');
     nextSectionDetail.innerText = song.sections[nextSection].detail;
+    nextSectionDetail.title = song.sections[nextSection].detail;
 }
 
 function seekToNext() {
@@ -179,6 +180,7 @@ function seekToNext() {
     currentSectionTitle.innerText = song.sections[currentSection].title;
     const currentSectionDetail = document.getElementById('currentSectionDetail');
     currentSectionDetail.innerText = song.sections[currentSection].detail;
+    currentSectionDetail.title = song.sections[currentSection].detail;
 
     const allSections = document.getElementById('allSections');
     if (allSections.innerText.length !== 0) {
