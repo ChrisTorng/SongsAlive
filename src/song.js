@@ -27,12 +27,12 @@ function setTitle(song) {
 function setSections(song) {
     var sectionsHtml = '';
     for (var index in song.sections) {
+        const duration = song.sections[index].end - song.sections[index].start;
         sectionsHtml += '<li onclick="selectSection(' + index + ')" ' +
             'title="' + song.sections[index].detail + '">' +
             '<div>' + song.sections[index].title + '</div>' +
-            '<div>' + song.sections[index].detail.substring(0, 4) + '</div>' +
-            '<div>' + song.sections[index].start + '<br/>' +
-            song.sections[index].end + '</div>' +
+            '<div class="sectionsDetail">' + song.sections[index].detail + '</div>' +
+            '<div>' + rightPadTo2Digits(duration) + '</div>' +
             '</li>\n';
     }
 
