@@ -9,18 +9,21 @@ body {
 }
 
 .left-panel {
-    width: 30%;
+    width: calc(100% - 480px - 50px);
 }
 
 .title {
     font-size: 1.2em;
     line-height: 1.4em;
+    margin-block-start: 2pt;
+    margin-block-end: 2pt;
 }
 
 .song-title {
     font-size: 1.2em;
     line-height: 1.4em;
-    cursor: pointer;
+    margin-block-start: 2pt;
+    margin-block-end: 5pt;
 }
 
 #player {
