@@ -9,7 +9,7 @@
 <body>
     <div class="left-panel">
         <h1 class="title"><a href=".">SongsAlive</a> Player<h1>
-        <h2 class="song-title"><a id="title" target="_blank"></a></h2>
+                <h2 class="song-title"><a id="title" target="_blank"></a></h2>
     </div>
 
     <div id="player"></div>
@@ -19,16 +19,22 @@
         <button id="pauseButton" onclick="onPauseButton()">Pause</button>
     </div>
 
-    <br/>
+    <br />
     <div>
-        Next: <span id="nextSection"></span>        
+        <div class="oneSection">
+            <div>Current: <span id="currentSectionTitle"></span></div>
+            <div id="currentSectionDetail" class="sectionDetail"></div>
+        </div>
+
+        <div class="oneSection">
+            <div>Next: <span id="nextSectionTitle"></span></div>
+            <div id="nextSectionDetail" class="sectionDetail"></div>
+        </div>
     </div>
 
-    <div>
+    <div class="allSections">
         Played: <span id="allSections"></span>
     </div>
-    <br/>
-    <br/>
 
     <div>
         <ul id="sections"></ul>
