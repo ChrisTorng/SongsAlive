@@ -13,8 +13,11 @@ function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
         origin: window.location.origin,
         playerVars: {
-            'playsinline': 1
-        },
+            'playsinline': 1,
+            'controls': 0,
+            'rel': 0
+            //'modestbranding': 0
+            },
         events: {
             'onReady': onReady,
             'onStateChange': onStateChange,
@@ -162,13 +165,20 @@ function setCheckTimer() {
 
 function selectSection(section) {
     nextSection = section;
-    const nextSectionTitle = document.getElementById('nextSection');
-    nextSectionTitle.innerText = song.sections[nextSection].title +
-        ': ' + song.sections[nextSection].detail;
+
+    const nextSectionTitle = document.getElementById('nextSectionTitle');
+    nextSectionTitle.innerText = song.sections[nextSection].title;
+    const nextSectionDetail = document.getElementById('nextSectionDetail');
+    nextSectionDetail.innerText = song.sections[nextSection].detail;
 }
 
 function seekToNext() {
     seekToSection(nextSection);
+
+    const currentSectionTitle = document.getElementById('currentSectionTitle');
+    currentSectionTitle.innerText = song.sections[currentSection].title;
+    const currentSectionDetail = document.getElementById('currentSectionDetail');
+    currentSectionDetail.innerText = song.sections[currentSection].detail;
 
     const allSections = document.getElementById('allSections');
     if (allSections.innerText.length !== 0) {
