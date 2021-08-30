@@ -29,9 +29,73 @@ function onYouTubeIframeAPIReady() {
     });
 }
 
+function onVolumeUpButton() {
+    const volume = player.getVolume();
+    if (volume >= 100) {
+        return;
+    }
+
+    const newVolume = volume + 10;
+    if (newVolume > 100) {
+        newVolume = 100;
+    }
+
+    player.setVolume(newVolume);
+    displayVolumeValue(newVolume);
+}
+
+function onVolumeDownButton() {
+    const volume = player.getVolume();
+    if (volume <= 0) {
+        return;
+    }
+    const newVolume = volume - 10;
+    if (newVolume < 0) {
+        newVolume = 0;
+    }
+
+    player.setVolume(newVolume);
+    displayVolumeValue(newVolume);
+}
+
+function displayVolumeValue(volume) {
+    if (volume === undefined) {
+        volume = player.getVolume();
+    }
+    const volumeValue = document.getElementById('volumeValue');
+    volumeValue.innerText = volume;
+
+    const volumeUpButton = document.getElementById('volumeUpButton');
+    const volumeDownButton = document.getElementById('volumeDownButton');
+
+    if (volume >= 100) {
+        volumeUpButton.classList.add('disabled');
+        volumeDownButton.classList.remove('disabled');
+    } else if (volume <= 0) {
+        volumeUpButton.classList.remove('disabled');
+        volumeDownButton.classList.add('disabled');
+    } else {
+        volumeUpButton.classList.remove('disabled');
+        volumeDownButton.classList.remove('disabled');
+    }
+}
+
+function onMuteButton() {
+    const muteButton = document.getElementById('muteButton');
+    const isMuted = player.isMuted();
+    if (isMuted) {
+        player.unMute();
+        muteButton.innerText = 'Mute';
+    } else {
+        player.mute();
+        muteButton.innerText = 'Unmute';
+    }
+}
+
 function onReady(event) {
     console.log('onReady', event);
     
+    displayVolumeValue();
     event.target.cueVideoById(song.videoId);
 }
 

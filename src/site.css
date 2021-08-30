@@ -39,6 +39,11 @@ body {
     pointer-events: none;
 }
 
+#volumeValue {
+    width: 30px;
+    display: inline-block;
+}
+
 .oneSection {
     float: left;
     padding-left: 3pt;
@@ -48,7 +53,7 @@ body {
 
 .sectionDetail {
     line-height: 1.2em;
-    height: 6em;
+    height: 7em;
     overflow: hidden;
 }
 
