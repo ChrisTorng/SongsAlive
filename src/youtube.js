@@ -156,31 +156,35 @@ const skipTime = 0.1;
 var currentSection = 0;
 var nextSection = 0;
 
-function setCheckTimer() {
-    const endTime = song.sections[currentSection].end;
+function setCheckTimer(section = currentSection) {
+    const endTime = song.sections[section].end;
     const currentTime = player.getCurrentTime();
     timerId = setTimeout(seekToNext, (endTime - currentTime - skipTime) * 1000);
     console.log(timestamp(), 'setCheckTimer', rightPadTo3Digits(currentTime), endTime);
 }
 
 function selectSection(section) {
+    console.log('selectSection', section);
     nextSection = section;
 
-    const nextSectionTitle = document.getElementById('nextSectionTitle');
-    nextSectionTitle.innerText = song.sections[nextSection].title;
-    const nextSectionDetail = document.getElementById('nextSectionDetail');
-    nextSectionDetail.innerText = song.sections[nextSection].detail;
-    nextSectionDetail.title = song.sections[nextSection].detail;
+    displayNextSection(song.sections[nextSection]);
 }
 
 function seekToNext() {
-    seekToSection(nextSection);
+    if (song.sections[nextSection].start >= 0) {
+        seekToSection(nextSection);
+        displayNextSection(song.sections[nextSection]);
+    } else {
+        console.log(timestamp(), 'seekToSection end');
+        onPauseButton();
 
-    const currentSectionTitle = document.getElementById('currentSectionTitle');
-    currentSectionTitle.innerText = song.sections[currentSection].title;
-    const currentSectionDetail = document.getElementById('currentSectionDetail');
-    currentSectionDetail.innerText = song.sections[currentSection].detail;
-    currentSectionDetail.title = song.sections[currentSection].detail;
+        currentSection = nextSection;
+        nextSection = 0;
+
+        displayNextSection(song.sections[nextSection]);
+    }
+
+    displayCurrentSection(song.sections[currentSection]);
 
     const allSections = document.getElementById('allSections');
     if (allSections.innerText.length !== 0) {
@@ -189,13 +193,40 @@ function seekToNext() {
     allSections.innerText += song.sections[currentSection].title;
 }
 
+function clearNextSection() {
+    displayNextSection({ title: '', detail: ''});
+}
+
+function displayNextSection(section) {
+    const nextSectionTitle = document.getElementById('nextSectionTitle');
+    nextSectionTitle.innerText = section.title;
+    const nextSectionDetail = document.getElementById('nextSectionDetail');
+    nextSectionDetail.innerText = section.detail;
+    nextSectionDetail.title = section.detail;}
+
+function displayCurrentSection(section) {
+    const currentSectionTitle = document.getElementById('currentSectionTitle');
+    currentSectionTitle.innerText = section.title;
+    const currentSectionDetail = document.getElementById('currentSectionDetail');
+    currentSectionDetail.innerText = section.detail;
+    currentSectionDetail.title = section.detail;}
+
 function seekToSection(section) {
     timerId = undefined;
-    const gotoTime = song.sections[section].start;
-    player.seekTo(gotoTime, true);
-    const currentTime = player.getCurrentTime();
-    console.log(timestamp(), 'seekToSection', section, rightPadTo3Digits(currentTime), gotoTime);
+
+    if (song.sections[currentSection].end !== song.sections[section].start) 
+    {
+        const gotoTime = song.sections[section].start;
+        player.seekTo(gotoTime, true);
+        const currentTime = player.getCurrentTime();
+        console.log(timestamp(), 'seekToSection', section, rightPadTo3Digits(currentTime), gotoTime);
+    } else {
+        setCheckTimer(nextSection);
+    }
+
     currentSection = nextSection;
+    nextSection = currentSection + 1;
+    console.log(timestamp(), 'seekToSection current=' + currentSection + ', next=' + nextSection);
 }
 
 var lastTimestamp = new Date();
