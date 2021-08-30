@@ -26,6 +26,9 @@ function setTitle(song) {
 
 function setSections(song) {
     var sectionsHtml = '';
+
+    addStopSection(song.sections);
+
     for (var index in song.sections) {
         const duration = song.sections[index].end - song.sections[index].start;
         sectionsHtml += '<li onclick="selectSection(' + index + ')" ' +
@@ -38,4 +41,8 @@ function setSections(song) {
 
     const sectionsList = document.getElementById('sectionsList');
     sectionsList.innerHTML = sectionsHtml;
+}
+
+function addStopSection(sections) {
+    sections.push({ title: '停止', detail: '', start: -1, end: -1 });
 }
