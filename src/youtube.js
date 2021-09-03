@@ -9,8 +9,9 @@ function loadPlayer(newSong) {
 }
 
 var player;
+var pplayer;
 function onYouTubeIframeAPIReady() {
-    player = new YT.Player('player', {
+    pplayer = new YT.Player('player', {
         origin: window.location.origin,
         playerVars: {
             'playsinline': 1,
@@ -39,6 +40,10 @@ function fullScreenToggle() {
         full.close();
         full = undefined;
     }
+}
+
+function replacePlayer(newPlayer) {
+    player = newPlayer;
 }
 
 function onVolumeUpButton() {
