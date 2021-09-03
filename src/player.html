@@ -12,8 +12,11 @@
         <h2 class="song-title"><a id="title" target="_blank"></a></h2>
     </div>
 
-    <div id="player"></div>
-
+    <div id="playerchrome">
+        <button class="playerchromebutton" onclick="fullScreenToggle()" title="Full screen">□</button>
+        <div id="player"></div>
+    </div>
+    
     <div id="control" class="disabled">
         <button id="playButton" onclick="onPlayButton()">Play</button>
         <button id="pauseButton" onclick="onPauseButton()">Pause</button>

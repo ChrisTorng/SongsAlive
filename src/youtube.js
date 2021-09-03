@@ -29,6 +29,18 @@ function onYouTubeIframeAPIReady() {
     });
 }
 
+var full;
+function fullScreenToggle() {
+    if (!full || full.closed) {
+        full = window.open('full.html', '_blank',
+            'top=0,left=0,width=' + screen.width + ',height=' + screen.height +
+            'fullscreen=yes,directories=no,location=no,menubar=no,resizable=no,scrollbars=no,status=no,toolbar=no');
+    } else {
+        full.close();
+        full = undefined;
+    }
+}
+
 function onVolumeUpButton() {
     const volume = player.getVolume();
     if (volume >= 100) {

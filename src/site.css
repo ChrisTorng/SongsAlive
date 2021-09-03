@@ -26,12 +26,25 @@ body {
     margin-block-end: 5pt;
 }
 
+#playerchrome {
+    width: 500px;
+    height: 270px;
+    position: absolute;
+    top: 5pt;
+    right: 5pt;
+}
+
+.playerchromebutton {
+    padding-left: 4pt;
+    padding-right: 4pt;
+}
+
 #player {
     width: 480px;
     height: 270px;
     position: absolute;
-    top: 10pt;
-    right: 10pt;
+    top: 0;
+    right: 0;
 }
 
 .disabled {
