@@ -9,9 +9,9 @@ function loadPlayer(newSong) {
 }
 
 var player;
-var pplayer;
+var fullplayer;
 function onYouTubeIframeAPIReady() {
-    pplayer = new YT.Player('player', {
+    player = new YT.Player('player', {
         origin: window.location.origin,
         playerVars: {
             'playsinline': 1,
@@ -33,17 +33,19 @@ function onYouTubeIframeAPIReady() {
 var full;
 function fullScreenToggle() {
     if (!full || full.closed) {
-        full = window.open('full.html', '_blank',
+        fullplayer = undefined;
+        full = window.open('full.html?videoId=' + song.videoId, 'full',
             'top=0,left=0,width=' + screen.width + ',height=' + screen.height +
             'fullscreen=yes,directories=no,location=no,menubar=no,resizable=no,scrollbars=no,status=no,toolbar=no');
     } else {
+        fullplayer = undefined;
         full.close();
         full = undefined;
     }
 }
 
-function replacePlayer(newPlayer) {
-    player = newPlayer;
+function setFullPlayer(newPlayer) {
+    fullplayer = newPlayer;
 }
 
 function onVolumeUpButton() {
@@ -52,7 +54,7 @@ function onVolumeUpButton() {
         return;
     }
 
-    const newVolume = volume + 10;
+    var newVolume = volume + 10;
     if (newVolume > 100) {
         newVolume = 100;
     }
@@ -66,7 +68,7 @@ function onVolumeDownButton() {
     if (volume <= 0) {
         return;
     }
-    const newVolume = volume - 10;
+    var newVolume = volume - 10;
     if (newVolume < 0) {
         newVolume = 0;
     }
@@ -113,7 +115,7 @@ function onReady(event) {
     console.log('onReady', event);
     
     displayVolumeValue();
-    event.target.cueVideoById(song.videoId);
+    player.cueVideoById(song.videoId);
 }
 
 function onStateChange(event) {
@@ -126,7 +128,6 @@ function onStateChange(event) {
         break;
 
     case YT.PlayerState.PLAYING:
-        //console.log('duration', duration(player.getDuration()));
         setCheckTimer();
         break;
     }
@@ -210,11 +211,13 @@ function onPlayButton() {
     //player.playVideo();
     const startTime = song.sections[nextSection].start;
     player.loadVideoById(song.videoId, startTime);
+    fullplayer?.loadVideoById(song.videoId, startTime);
 }
 
 function onPauseButton() {
     clearTimer();
     player.pauseVideo();
+    fullplayer?.pauseVideo();
     displayStatus();
 }
 
@@ -299,6 +302,7 @@ function seekToSection(section) {
     {
         const gotoTime = song.sections[section].start;
         player.seekTo(gotoTime, true);
+        fullplayer?.seekTo(gotoTime, true);
         const currentTime = player.getCurrentTime();
         console.log(timestamp(), 'seekToSection', section, rightPadTo3Digits(currentTime), gotoTime);
     } else {
