@@ -1,4 +1,8 @@
+const params = new URLSearchParams(window.location.search);
+const videoId = params.get('videoId');
+
 loadPlayer();
+
 function loadPlayer() {
     var tag = document.createElement('script');
 
@@ -27,25 +31,26 @@ function onYouTubeIframeAPIReady() {
         }
     });
 
-    window.opener.replacePlayer(player);
+    window.opener.setFullPlayer(player);
 }
 
 function onReady(event) {
-    window.opener.onReady(event);
+    player.cueVideoById(videoId);
+    player.mute();
 }
 
 function onStateChange(event) {
-    window.opener.onStateChange(event);
+    console.log(timestamp(), 'onStateChange', playerState(event.data));
 }
 
 function onPlaybackQualityChange(event) {
-    window.opener.onPlaybackQualityChange(event);
+    console.log("onPlaybackQualityChange", event.data);
 }
 
 function onPlaybackRateChange(event) {
-    window.opener.onPlaybackRateChange(event);
+    console.log("onPlaybackRateChange", event.data);
 }
 
 function onError(event) {
-    window.opener.onError(event);
+    console.log("onError", event.data);
 }
