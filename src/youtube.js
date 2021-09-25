@@ -271,10 +271,10 @@ function seekToNext() {
     displayCurrentSection(song.sections[currentSection]);
 
     const allSections = document.getElementById('allSections');
-    if (allSections.innerText.length !== 0) {
-        allSections.innerText += ', '
+    if (allSections.innerHTML.length !== 0) {
+        allSections.innerHTML += ', '
     }
-    allSections.innerText += song.sections[currentSection].title;
+    allSections.innerHTML += song.sections[currentSection].title;
 }
 
 function clearNextSection() {
