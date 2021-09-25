@@ -284,6 +284,15 @@ function clearNextSection() {
 function displayNextSection(section) {
     const nextSectionTitle = document.getElementById('nextSectionTitle');
     nextSectionTitle.innerText = section.title;
+
+    const nextSectionDuration = document.getElementById('nextSectionDuration');
+    const duration = section.end - section.start;
+    if (duration != 0) {
+        nextSectionDuration.innerText = rightPadTo2Digits(duration);
+    } else {
+        nextSectionDuration.innerText = '';
+    }
+
     const nextSectionDetail = document.getElementById('nextSectionDetail');
     nextSectionDetail.innerText = section.detail;
     nextSectionDetail.title = section.detail;}
@@ -291,6 +300,15 @@ function displayNextSection(section) {
 function displayCurrentSection(section) {
     const currentSectionTitle = document.getElementById('currentSectionTitle');
     currentSectionTitle.innerText = section.title;
+
+    const currentSectionDuration = document.getElementById('currentSectionDuration');
+    const duration = section.end - section.start;
+    if (duration != 0) {
+        currentSectionDuration.innerText = rightPadTo2Digits(duration);
+    } else {
+        currentSectionDuration.innerText = '';
+    }
+
     const currentSectionDetail = document.getElementById('currentSectionDetail');
     currentSectionDetail.innerText = section.detail;
     currentSectionDetail.title = section.detail;}

@@ -64,6 +64,10 @@ body {
     width: 280px;
 }
 
+.sectionDuration {
+    margin-left: 7pt;
+}
+
 .sectionDetail {
     line-height: 1.2em;
     height: 7em;
