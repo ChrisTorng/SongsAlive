@@ -1,6 +1,17 @@
 const params = new URLSearchParams(window.location.search);
 const videoId = params.get('videoId');
 
+function fullScreen() {
+    const playerElement = document.getElementById('player');
+    var requestFullScreen = playerElement.requestFullScreen ||
+        playerElement.webkitRequestFullScreen ||
+        playerElement.mozRequestFullScreen ||
+        playerElement.msRequestFullScreen;
+    if (requestFullScreen) {
+        requestFullScreen.bind(playerElement)();
+    }
+}
+
 loadPlayer();
 
 function loadPlayer() {

@@ -1,11 +1,21 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>SongsAlive</title>
-    <link href="full.css" rel='stylesheet' type='text/css' />
-  </head>
-  <body>
-    <div id="player"></div>
-    <script src="full.js"></script>
-  </body>
+
+<head>
+  <title>SongsAlive Full Screen Player</title>
+  <link href="full.css" rel='stylesheet' type='text/css' />
+</head>
+
+<body onclick="fullScreen()" onkeydown="fullScreen()"">
+  <div id="full-screen">
+    <div id="message">
+      Use [Win]+[Shift]+[←]/[→] to move to another screen, and it will turn to full screen automatically.<br /><br />
+      Or click anywhere, or press any key to enter full screen mode.<br /><br />
+      Close this full screen window by press Player page's [Full screen] button again.
+    </div>
+  </div>
+  <div id="player"></div>
+  <script src="full.js"></script>
+</body>
+
 </html>
