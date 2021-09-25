@@ -35,8 +35,8 @@ function setSections(song) {
         sectionsHtml += '<li onclick="selectSection(' + index + ')" ' +
             'title="' + song.sections[index].detail + '">' +
             '<div>' + song.sections[index].title + '</div>' +
+            (duration !== 0 ? '<div>' + rightPadTo2Digits(duration) + '</div>' : '<div>&nbsp;</div>') +
             '<div class="sectionsDetail">' + song.sections[index].detail + '</div>' +
-            '<div>' + rightPadTo2Digits(duration) + '</div>' +
             '</li>\n';
     }
 
