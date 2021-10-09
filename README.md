@@ -3,7 +3,7 @@ Live remix YouTube song's sections. Designed for church worship service. [See it
 
 You need dual screen to show the full screen player on the projecting screen.
 
-Currently new songs needs to be added by me. Add [Issues](./issues) to notify me.
+Currently new songs needs to be added by me. Add [Issues](https://github.com/ChrisTorng/SongsAlive/issues) to notify me.
 
 Welcome any contribution, including coding, layout and new songs.
 
