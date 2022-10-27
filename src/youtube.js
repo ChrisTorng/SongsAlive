@@ -34,7 +34,8 @@ var full;
 function fullScreenToggle() {
     if (!full || full.closed) {
         fullplayer = undefined;
-        full = window.open('full.html?videoId=' + song.videoId, 'full',
+        const url = 'full?videoId=' + song.videoId + '&title=' + encodeURIComponent(song.title);
+        full = window.open(url, 'fullWindow',
             'top=0,left=0,width=' + screen.width + ',height=' + screen.height +
             'fullscreen=yes,directories=no,location=no,menubar=no,resizable=no,scrollbars=no,status=no,toolbar=no');
     } else {

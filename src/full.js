@@ -1,5 +1,6 @@
 const params = new URLSearchParams(window.location.search);
 const videoId = params.get('videoId');
+document.title = params.get('title');
 
 function fullScreen() {
     const playerElement = document.getElementById('player');
