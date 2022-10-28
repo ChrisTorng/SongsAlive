@@ -8,8 +8,8 @@ function loadPlayer(newSong) {
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 }
 
-var player;
 var fullplayer;
+var player;
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
         origin: window.location.origin,
@@ -211,14 +211,14 @@ function onPlayButton() {
     //seekToSection(nextSection);
     //player.playVideo();
     const startTime = song.sections[nextSection].start;
-    player.loadVideoById(song.videoId, startTime);
     fullplayer?.loadVideoById(song.videoId, startTime);
+    player.loadVideoById(song.videoId, startTime);
 }
 
 function onPauseButton() {
     clearTimer();
-    player.pauseVideo();
     fullplayer?.pauseVideo();
+    player.pauseVideo();
     displayStatus();
 }
 
@@ -320,8 +320,8 @@ function seekToSection(section) {
     if (song.sections[currentSection].end !== song.sections[section].start) 
     {
         const gotoTime = song.sections[section].start;
-        player.seekTo(gotoTime, true);
         fullplayer?.seekTo(gotoTime, true);
+        player.seekTo(gotoTime, true);
         const currentTime = player.getCurrentTime();
         console.log(timestamp(), 'seekToSection', section, rightPadTo3Digits(currentTime), gotoTime);
     } else {
