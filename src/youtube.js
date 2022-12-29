@@ -244,7 +244,14 @@ var nextSection = 0;
 function setCheckTimer(section = currentSection) {
     const endTime = song.sections[section].end;
     const currentTime = player.getCurrentTime();
-    timerId = setTimeout(seekToNext, (endTime - currentTime - skipTime) * 1000);
+    const timeout = endTime - currentTime - skipTime;
+    console.log('endTime:' + endTime + ', currentTime:' + currentTime + 'skipTime:' + skipTime);
+    if (timeout < 0) {
+        console.warn('endTime-currentTime-skipTime:' + timeout);
+        //seekToNext();
+    }
+
+    timerId = setTimeout(seekToNext, timeout * 1000);
     console.log(timestamp(), 'setCheckTimer', rightPadTo3Digits(currentTime), endTime);
 }
 
