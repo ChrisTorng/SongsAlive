@@ -1,5 +1,5 @@
 # [SongsAlive](https://christorng.github.io/SongsAlive/src/)
-Live remix YouTube song's sections. Designed for church worship service. [See it live](https://christorng.github.io/SongsAlive/src/).
+Live remix YouTube song's sections. Designed for church worship service. [Live demo](https://christorng.github.io/SongsAlive/src/).
 
 You need dual screen to show the full screen player on the projecting screen.
 
@@ -9,7 +9,7 @@ Welcome any contribution, including coding, layout and new songs.
 
 # Future plan
 
-* Rewrite by [F#](https://fsharp.org/) with [SAFE stack](https://safe-stack.github.io/)
+* Replace JavaScript with TypeScript
 * Play any video/audio
 * Play audio with images/PowerPoint
 * For group meeting worship, worship leader controlls the playing, while others watching from their phone synchronously
@@ -19,4 +19,11 @@ Welcome any contribution, including coding, layout and new songs.
 cd src
 npx serve
 ```
-Open [http://localhost:5000](http://localhost:5000).
+Open [http://localhost:3000](http://localhost:3000).
+
+## Development
+```
+cd src
+tsc -w
+```
+
