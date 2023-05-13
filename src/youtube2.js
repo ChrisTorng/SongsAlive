@@ -49,8 +49,8 @@ export class YouTubePlayer {
     }
     onYouTubeIframeAPIReady() {
         this.player = new YT.Player('player', {
-            // origin: '', //window.location.origin,
             playerVars: {
+                origin: window.location.origin,
                 playsinline: 1,
                 controls: 0,
                 rel: 0
