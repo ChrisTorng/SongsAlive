@@ -105,7 +105,7 @@ export class YouTubePlayer {
         }
     }
 
-    private setFullPlayer(newPlayer: YT.Player) {
+    public setFullPlayer(newPlayer: YT.Player) {
         this.fullplayer = newPlayer;
     }
 

@@ -6,7 +6,6 @@ class FullScreenPlayer {
         const params = new URLSearchParams(window.location.search);
         this.videoId = params.get('videoId') || '';
         document.title = params.get('title') || '';
-        this.loadPlayer();
     }
     fullScreen() {
         const playerElement = document.getElementById('player');
@@ -31,7 +30,7 @@ class FullScreenPlayer {
                 playsinline: 1,
                 controls: 0,
                 rel: 0
-                //'modestbranding': 0
+                //modestbranding: 0
             },
             events: {
                 onReady: this.onReady.bind(this),

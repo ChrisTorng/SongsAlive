@@ -19,6 +19,8 @@
     import { FullScreenPlayer } from './full2.js';
 
     const fullScreenPlayer = new FullScreenPlayer();
+    window.onYouTubeIframeAPIReady = () => fullScreenPlayer.onYouTubeIframeAPIReady();
+    fullScreenPlayer.loadPlayer();
     
   </script>
 </body>

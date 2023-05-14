@@ -209,8 +209,19 @@ export class YouTubePlayer {
     onError(event) {
         console.log("onError", event.data);
     }
+    // private onApiChange(event) {
+    //     console.log('onApiChange');
+    //     console.log(player.getOptions());
+    //     var options = player.getOptions('captions');
+    //     console.log(options);
+    //     for (var index in options) {
+    //         console.log(options[index], player.getOption('captions', options[index]));
+    //     }
+    // }
     onPlayButton() {
         this.clearTimer();
+        //seekToSection(nextSection);
+        //player.playVideo();
         const startTime = this.song?.sections[this.nextSection].start;
         if (this.fullplayer) {
             this.fullplayer.loadVideoById(this.song?.videoId, startTime);
@@ -243,6 +254,7 @@ export class YouTubePlayer {
         console.log('endTime:' + endTime + ', currentTime:' + currentTime + 'skipTime:' + this.skipTime);
         if (timeout < 0) {
             console.warn('endTime-currentTime-skipTime:' + timeout);
+            //seekToNext();
         }
         this.timerId = setTimeout(() => this.seekToNext(), timeout * 1000);
         console.log(this.timestamp(), 'setCheckTimer', this.rightPadTo3Digits(currentTime), endTime);
