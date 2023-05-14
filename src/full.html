@@ -15,7 +15,12 @@
     </div>
   </div>
   <div id="player"></div>
-  <script src="full.js"></script>
+  <script type="module">
+    import { FullScreenPlayer } from './full2.js';
+
+    const fullScreenPlayer = new FullScreenPlayer();
+    
+  </script>
 </body>
 
 </html>
