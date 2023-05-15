@@ -1,68 +1,64 @@
-const params = new URLSearchParams(window.location.search);
-const videoId = params.get('videoId');
-document.title = params.get('title');
-
-function fullScreen() {
-    const playerElement = document.getElementById('player');
-    var requestFullScreen = playerElement.requestFullScreen ||
-        playerElement.webkitRequestFullScreen ||
-        playerElement.mozRequestFullScreen ||
-        playerElement.msRequestFullScreen;
-    if (requestFullScreen) {
-        requestFullScreen.bind(playerElement)();
+export class FullScreenPlayer {
+    videoId;
+    player;
+    constructor() {
+        const params = new URLSearchParams(window.location.search);
+        this.videoId = params.get('videoId') || '';
+        document.title = params.get('title') || '';
     }
-}
-
-loadPlayer();
-
-function loadPlayer() {
-    var tag = document.createElement('script');
-
-    tag.src = "https://www.youtube.com/iframe_api";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-}
-
-var player;
-function onYouTubeIframeAPIReady() {
-    player = new YT.Player('player', {
-        origin: window.location.origin,
-        playerVars: {
-            'playsinline': 1,
-            'controls': 0,
-            'rel': 0
-            //'modestbranding': 0
-            },
-        events: {
-            'onReady': onReady,
-            'onStateChange': onStateChange,
-            'onPlaybackQualityChange': onPlaybackQualityChange,
-            'onPlaybackRateChange': onPlaybackRateChange,
-            'onError': onError
-            // 'onApiChange': onApiChange
+    fullScreen() {
+        const playerElement = document.getElementById('player');
+        const requestFullScreen = playerElement.requestFullscreen; // ||
+        // playerElement.webkitRequestFullscreen ||
+        // playerElement.mozRequestFullScreen ||
+        // playerElement.msRequestFullscreen;
+        if (requestFullScreen) {
+            requestFullScreen.bind(playerElement)();
         }
-    });
-
-    window.opener.setFullPlayer(player);
-}
-
-function onReady(event) {
-    player.cueVideoById(videoId);
-    player.mute();
-}
-
-function onStateChange(event) {
-    console.log(timestamp(), 'onStateChange', playerState(event.data));
-}
-
-function onPlaybackQualityChange(event) {
-    console.log("onPlaybackQualityChange", event.data);
-}
-
-function onPlaybackRateChange(event) {
-    console.log("onPlaybackRateChange", event.data);
-}
-
-function onError(event) {
-    console.log("onError", event.data);
+    }
+    loadPlayer() {
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    }
+    onYouTubeIframeAPIReady() {
+        this.player = new YT.Player('player', {
+            playerVars: {
+                origin: window.location.origin,
+                playsinline: 1,
+                controls: 0,
+                rel: 0
+                //modestbranding: 0
+            },
+            events: {
+                onReady: this.onReady.bind(this),
+                onStateChange: this.onStateChange.bind(this),
+                onPlaybackQualityChange: this.onPlaybackQualityChange.bind(this),
+                onPlaybackRateChange: this.onPlaybackRateChange.bind(this),
+                onError: this.onError.bind(this)
+                // onApiChange: onApiChange
+            }
+        });
+        window.opener.setFullPlayer(this.player);
+    }
+    pauseVideo() {
+        this.player.pauseVideo();
+    }
+    onReady(event) {
+        this.player.cueVideoById(this.videoId);
+        this.player.mute();
+    }
+    onStateChange(event) {
+        console.log('onStateChange', event.data);
+    }
+    onPlaybackQualityChange(event) {
+        console.log("onPlaybackQualityChange", event.data);
+    }
+    onPlaybackRateChange(event) {
+        console.log("onPlaybackRateChange", event.data);
+    }
+    onError(event) {
+        console.log("onError", event.data);
+    }
 }
