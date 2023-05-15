@@ -6,7 +6,7 @@
   <link href="full.css" rel='stylesheet' type='text/css' />
 </head>
 
-<body onclick="fullScreen()" onkeydown="fullScreen()"">
+<body>
   <div id="full-screen">
     <div id="message">
       Click anywhere, or press any key to enter full screen mode.<br />
@@ -19,9 +19,11 @@
     import { FullScreenPlayer } from './full2.js';
 
     const fullScreenPlayer = new FullScreenPlayer();
+    document.body.onclick = () => fullScreenPlayer.fullScreen();
+    document.body.onkeypress = () => fullScreenPlayer.fullScreen();
     window.onYouTubeIframeAPIReady = () => fullScreenPlayer.onYouTubeIframeAPIReady();
+
     fullScreenPlayer.loadPlayer();
-    
   </script>
 </body>
 

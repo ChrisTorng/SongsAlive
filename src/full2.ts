@@ -1,4 +1,4 @@
-class FullScreenPlayer {
+export class FullScreenPlayer {
     private videoId: string;
     private player!: YT.Player;
     

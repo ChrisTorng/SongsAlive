@@ -1,5 +1,4 @@
-"use strict";
-class FullScreenPlayer {
+export class FullScreenPlayer {
     videoId;
     player;
     constructor() {
