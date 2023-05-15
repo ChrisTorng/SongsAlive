@@ -42,6 +42,9 @@ export class FullScreenPlayer {
         });
         window.opener.setFullPlayer(this.player);
     }
+    pauseVideo() {
+        this.player.pauseVideo();
+    }
     onReady(event) {
         this.player.cueVideoById(this.videoId);
         this.player.mute();

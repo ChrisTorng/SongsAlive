@@ -209,7 +209,7 @@ export class YouTubePlayer {
     onError(event) {
         console.log("onError", event.data);
     }
-    // private onApiChange(event) {
+    // private onApiChange(event: any): void {
     //     console.log('onApiChange');
     //     console.log(player.getOptions());
     //     var options = player.getOptions('captions');
@@ -223,17 +223,20 @@ export class YouTubePlayer {
         //seekToSection(nextSection);
         //player.playVideo();
         const startTime = this.song?.sections[this.nextSection].start;
+        this.player?.loadVideoById(this.song?.videoId, startTime);
         if (this.fullplayer) {
             this.fullplayer.loadVideoById(this.song?.videoId, startTime);
         }
-        this.player?.loadVideoById(this.song?.videoId, startTime);
     }
     onPauseButton() {
         this.clearTimer();
-        if (this.fullplayer) {
-            this.fullplayer.pauseVideo();
-        }
         this.player?.pauseVideo();
+        // if(this.fullplayer) {
+        //     this.fullplayer.pauseVideo();
+        // }
+        if (this.full) {
+            this.full.pauseVideo();
+        }
         this.displayStatus();
     }
     clearTimer() {

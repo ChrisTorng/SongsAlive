@@ -48,6 +48,10 @@ export class FullScreenPlayer {
         window.opener.setFullPlayer(this.player);
     }
 
+    public pauseVideo(): void {
+        this.player.pauseVideo();
+    }
+
     private onReady(event: YT.PlayerEvent): void {
         this.player.cueVideoById(this.videoId);
         this.player.mute();
