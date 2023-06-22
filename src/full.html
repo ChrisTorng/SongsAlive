@@ -21,10 +21,9 @@
     const fullScreenPlayer = new FullScreenPlayer();
     document.body.onclick = () => fullScreenPlayer.fullScreen();
     document.body.onkeypress = () => fullScreenPlayer.fullScreen();
-    window.onYouTubeIframeAPIReady = () => fullScreenPlayer.onYouTubeIframeAPIReady();
+    window.pauseVideo = () => fullScreenPlayer.pauseVideo();
 
     fullScreenPlayer.loadPlayer();
-    window.pauseVideo = () => fullScreenPlayer.pauseVideo();
   </script>
 </body>
 
