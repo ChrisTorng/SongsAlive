@@ -62,8 +62,8 @@ Open full screen before playing start.">□</button>
         const songProcessor = new SongProcessor();
         const youTubePlayer = new YouTubePlayer();
 
-        window.onYouTubeIframeAPIReady = () => youTubePlayer.onYouTubeIframeAPIReady();
         window.setFullPlayer = (newPlayer) => youTubePlayer.setFullPlayer(newPlayer);
+
         const song = await songProcessor.process();
         youTubePlayer.loadPlayer(song);
         songProcessor.processSong(song);

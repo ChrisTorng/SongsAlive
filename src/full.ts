@@ -12,12 +12,17 @@ export class FullScreenPlayer {
 
     public loadPlayer(): void {
         this.player = YTPlayer.loadPlayer(this.videoId, this.onYouTubeIframeAPIReady);
-    }
-    
-    public onYouTubeIframeAPIReady(): void {
-        window.opener.setFullPlayer(this.player);
+        this.player.onReady = () => this.onReady();
     }
 
+    public onYouTubeIframeAPIReady(): void {
+        window.opener.setFullPlayer(this);
+    }
+
+    private onReady(): void {
+        this.player.muteToggle();
+    }
+    
     public fullScreen(): void {
         this.player.fullScreen();
     }

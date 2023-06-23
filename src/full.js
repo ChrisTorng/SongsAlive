@@ -9,9 +9,13 @@ export class FullScreenPlayer {
     }
     loadPlayer() {
         this.player = YTPlayer.loadPlayer(this.videoId, this.onYouTubeIframeAPIReady);
+        this.player.onReady = () => this.onReady();
     }
     onYouTubeIframeAPIReady() {
-        window.opener.setFullPlayer(this.player);
+        window.opener.setFullPlayer(this);
+    }
+    onReady() {
+        this.player.muteToggle();
     }
     fullScreen() {
         this.player.fullScreen();

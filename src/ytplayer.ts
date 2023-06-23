@@ -6,10 +6,12 @@ declare global {
 
 export class YTPlayer {
     private videoId: string;
-    private fullplayer?: YT.Player;
     private player?: YT.Player;
+    private lastTimestamp = new Date();
 
     public onYouTubeIframeAPIReady?: () => void;
+    public onReady?: () => void;
+    public onStateChange?: (event: YT.OnStateChangeEvent) => void;
 
     public static loadPlayer(videoId: string, onYouTubeIframeAPIReady?: () => void): YTPlayer {
         const player = new YTPlayer(videoId, onYouTubeIframeAPIReady);
@@ -33,8 +35,8 @@ export class YTPlayer {
                 rel: 0
             },
             events: {
-                onReady: this.onReady.bind(this),
-                onStateChange: this.onStateChange.bind(this),
+                onReady: this.onReadyHandler.bind(this),
+                onStateChange: this.onStateChangeHandler.bind(this),
                 onPlaybackQualityChange: this.onPlaybackQualityChange.bind(this),
                 onPlaybackRateChange: this.onPlaybackRateChange.bind(this),
                 onError: this.onError.bind(this)
@@ -62,12 +64,8 @@ export class YTPlayer {
         this.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
     }
 
-    public setFullPlayer(newPlayer: YT.Player): void {
-        this.fullplayer = newPlayer;
-    }
-
     public volumeUp(): number {
-        const volume = this.getVolume()!;
+        const volume = this.Volume;
         if (volume >= 100) {
             return 100;
         }
@@ -77,12 +75,12 @@ export class YTPlayer {
             newVolume = 100;
         }
 
-        this.player?.setVolume(newVolume);
-        return this.getVolume();
+        this.Volume = newVolume;
+        return newVolume;
     }
     
     public volumeDown(): number {
-        const volume = this.getVolume()!;
+        const volume = this.Volume;
         if (volume <= 0) {
             return 0;
         }
@@ -92,11 +90,15 @@ export class YTPlayer {
             newVolume = 0;
         }
 
-        this.player?.setVolume(newVolume);
-        return this.getVolume();
+        this.Volume = newVolume;
+        return newVolume;
     }
 
-    public getVolume(): number {
+    public set Volume(volume: number) {
+        this.player?.setVolume(volume)!;
+    }
+
+    public get Volume(): number {
         return this.player?.getVolume()!;
     }
 
@@ -108,17 +110,19 @@ export class YTPlayer {
         } else {
             this.player?.mute();
         }
-        return isMuted;
+        return !isMuted;
     }
     
-    private onReady(): void {
-        console.log('onReady');
-        
+    private onReadyHandler(): void {
+        console.log(this.timestamp(), 'onReadyHandler');
+        // Raise event before cueVideoById, or the volume will got undefined value
+        this.onReady?.();
         this.player?.cueVideoById(this.videoId!);
     }
 
-    private onStateChange(event: YT.OnStateChangeEvent): YT.PlayerState {
-        console.log('onStateChange', this.playerState(event.data));
+    private onStateChangeHandler(event: YT.OnStateChangeEvent): YT.PlayerState {
+        console.log(this.timestamp(), 'onStateChangeHandler', this.playerState(event.data));
+        this.onStateChange?.(event);
         return event.data;
     }
 
@@ -167,15 +171,10 @@ export class YTPlayer {
 
     public play(startTime: number): void {
         this.player?.loadVideoById(this.videoId, startTime);
-        if(this.fullplayer) {
-            this.fullplayer.loadVideoById(this.videoId, startTime);
-        }
     }
 
     public pause(): void {
         this.player?.pauseVideo();
-        this.fullplayer?.pauseVideo();
-        //(<any>this.full)?.pauseVideo();
         this.displayStatus();
     }
 
@@ -186,8 +185,48 @@ export class YTPlayer {
     }
     
     public seekTo(gotoTime: number): number {
-        this.fullplayer?.seekTo(gotoTime, true);
         this.player?.seekTo(gotoTime, true);
         return this.player?.getCurrentTime()!;
+    }
+
+    public getCurrentTime(): number {
+        return this.player?.getCurrentTime()!;
+    }
+
+    public timestamp(): string {
+        var newTimestamp = new Date();
+        const timestampText = newTimestamp.getMinutes() + ':' +
+            newTimestamp.getSeconds() + '.' +
+            YTPlayer.padTo3Digits(newTimestamp.getMilliseconds());
+        var timeSpent = (newTimestamp.getTime() - this.lastTimestamp.getTime()) / 1000;
+
+        this.lastTimestamp = newTimestamp;
+        return timestampText + ' ' + YTPlayer.rightPadTo3Digits(timeSpent);
+    }
+    
+    public static padTo3Digits(number: number): string {
+        if (number < 10) {
+            return '00' + number;
+        }
+        if (number < 100) {
+            return '0' + number;
+        }
+        return number.toString();
+    }
+    
+    public static rightPadTo3Digits(number: number): string {
+        if (number % 1 === 0) {
+            return number + '.000';
+        }
+
+        if ((number * 10) % 1 === 0) {
+            return number + '00';
+        }
+
+        if ((number * 100) % 1 === 0) {
+            return number + '0';
+        }
+
+        return (Math.round(number * 1000) / 1000).toFixed(3);
     }
 }

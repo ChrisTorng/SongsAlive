@@ -1,3 +1,4 @@
+import { YTPlayer } from './ytplayer.js';
 export class YouTubePlayer {
     volumeValue = document.getElementById('volumeValue');
     volumeUpButton = document.getElementById('volumeUpButton');
@@ -19,7 +20,6 @@ export class YouTubePlayer {
     timerId;
     currentSection = 0;
     nextSection = 0;
-    lastTimestamp = new Date();
     constructor() {
         this.initializeEventHandlers();
     }
@@ -42,27 +42,9 @@ export class YouTubePlayer {
     }
     loadPlayer(newSong) {
         this.song = newSong;
-        const tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        const firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
-    }
-    onYouTubeIframeAPIReady() {
-        this.player = new YT.Player('player', {
-            playerVars: {
-                origin: window.location.origin,
-                playsinline: 1,
-                controls: 0,
-                rel: 0
-            },
-            events: {
-                onReady: this.onReady.bind(this),
-                onStateChange: this.onStateChange.bind(this),
-                onPlaybackQualityChange: this.onPlaybackQualityChange.bind(this),
-                onPlaybackRateChange: this.onPlaybackRateChange.bind(this),
-                onError: this.onError.bind(this)
-            }
-        });
+        this.player = YTPlayer.loadPlayer(this.song.videoId);
+        this.player.onReady = () => this.onReady();
+        this.player.onStateChange = (event) => this.onStateChange(event);
     }
     setCurrentSection(currentSection) {
         this.currentSection = currentSection;
@@ -83,34 +65,19 @@ export class YouTubePlayer {
     }
     setFullPlayer(newPlayer) {
         this.fullplayer = newPlayer;
+        console.log('fullplayer setted');
     }
     onVolumeUpButton() {
-        const volume = this.player?.getVolume();
-        if (volume >= 100) {
-            return;
-        }
-        let newVolume = volume + 10;
-        if (newVolume > 100) {
-            newVolume = 100;
-        }
-        this.player?.setVolume(newVolume);
-        this.displayVolumeValue(newVolume);
+        const volume = this.player?.volumeUp();
+        this.displayVolumeValue(volume);
     }
     onVolumeDownButton() {
-        const volume = this.player?.getVolume();
-        if (volume <= 0) {
-            return;
-        }
-        let newVolume = volume - 10;
-        if (newVolume < 0) {
-            newVolume = 0;
-        }
-        this.player?.setVolume(newVolume);
-        this.displayVolumeValue(newVolume);
+        const volume = this.player?.volumeDown();
+        this.displayVolumeValue(volume);
     }
     displayVolumeValue(volume) {
         if (!volume) {
-            volume = this.player?.getVolume();
+            volume = this.player?.Volume;
         }
         this.volumeValue.innerText = volume.toString();
         if (volume >= 100) {
@@ -127,27 +94,22 @@ export class YouTubePlayer {
         }
     }
     onMuteButton() {
-        const isMuted = this.player?.isMuted();
-        if (isMuted) {
-            this.player?.unMute();
-            if (this.muteButton) {
-                this.muteButton.innerText = 'Mute';
-            }
-        }
-        else {
-            this.player?.mute();
+        const isUnmuted = this.player?.muteToggle();
+        if (isUnmuted) {
             if (this.muteButton) {
                 this.muteButton.innerText = 'Unmute';
             }
         }
+        else {
+            if (this.muteButton) {
+                this.muteButton.innerText = 'Mute';
+            }
+        }
     }
-    onReady(event) {
-        console.log('onReady', event);
+    onReady() {
         this.displayVolumeValue();
-        this.player?.cueVideoById(this.song?.videoId);
     }
     onStateChange(event) {
-        console.log(this.timestamp(), 'onStateChange', this.playerState(event.data));
         switch (event.data) {
             case YT.PlayerState.CUED:
                 this.control.classList.remove('disabled');
@@ -155,24 +117,6 @@ export class YouTubePlayer {
             case YT.PlayerState.PLAYING:
                 this.setCheckTimer();
                 break;
-        }
-    }
-    playerState(state) {
-        switch (state) {
-            case YT.PlayerState.UNSTARTED:
-                return "unstarted";
-            case YT.PlayerState.ENDED:
-                return "ended";
-            case YT.PlayerState.PLAYING:
-                return "playing";
-            case YT.PlayerState.PAUSED:
-                return "paused";
-            case YT.PlayerState.BUFFERING:
-                return "buffering";
-            case YT.PlayerState.CUED:
-                return "cued";
-            default:
-                return state.toString();
         }
     }
     duration(duration) {
@@ -191,53 +135,16 @@ export class YouTubePlayer {
         }
         return number.toString();
     }
-    padTo3Digits(number) {
-        if (number < 10) {
-            return '00' + number;
-        }
-        if (number < 100) {
-            return '0' + number;
-        }
-        return number.toString();
-    }
-    onPlaybackQualityChange(event) {
-        console.log("onPlaybackQualityChange", event.data);
-    }
-    onPlaybackRateChange(event) {
-        console.log("onPlaybackRateChange", event.data);
-    }
-    onError(event) {
-        console.log("onError", event.data);
-    }
-    // private onApiChange(event: any): void {
-    //     console.log('onApiChange');
-    //     console.log(player.getOptions());
-    //     var options = player.getOptions('captions');
-    //     console.log(options);
-    //     for (var index in options) {
-    //         console.log(options[index], player.getOption('captions', options[index]));
-    //     }
-    // }
     onPlayButton() {
         this.clearTimer();
-        //seekToSection(nextSection);
-        //player.playVideo();
         const startTime = this.song?.sections[this.nextSection].start;
-        this.player?.loadVideoById(this.song?.videoId, startTime);
-        if (this.fullplayer) {
-            this.fullplayer.loadVideoById(this.song?.videoId, startTime);
-        }
+        this.player?.play(startTime);
+        this.fullplayer?.play(startTime);
     }
     onPauseButton() {
         this.clearTimer();
-        this.player?.pauseVideo();
-        // if(this.fullplayer) {
-        //     this.fullplayer.pauseVideo();
-        // }
-        if (this.full) {
-            this.full.pauseVideo();
-        }
-        this.displayStatus();
+        this.player?.pause();
+        this.fullplayer?.pause();
     }
     clearTimer() {
         if (this.timerId) {
@@ -245,22 +152,17 @@ export class YouTubePlayer {
             this.timerId = undefined;
         }
     }
-    displayStatus() {
-        console.log('getVideoLoadedFraction', this.player?.getVideoLoadedFraction());
-        console.log('getPlayerState', this.playerState(this.player?.getPlayerState()));
-        console.log('getCurrentTime', this.player?.getCurrentTime());
-    }
     setCheckTimer(section = this.currentSection) {
         const endTime = this.song?.sections[section].end;
         const currentTime = this.player?.getCurrentTime();
         const timeout = endTime - currentTime - this.skipTime;
-        console.log('endTime:' + endTime + ', currentTime:' + currentTime + 'skipTime:' + this.skipTime);
+        console.log('endTime:' + endTime + ', currentTime:' + currentTime + ', skipTime:' + this.skipTime);
         if (timeout < 0) {
             console.warn('endTime-currentTime-skipTime:' + timeout);
             //seekToNext();
         }
         this.timerId = setTimeout(() => this.seekToNext(), timeout * 1000);
-        console.log(this.timestamp(), 'setCheckTimer', this.rightPadTo3Digits(currentTime), endTime);
+        console.log(this.player?.timestamp(), 'setCheckTimer', YTPlayer.rightPadTo3Digits(currentTime), endTime);
     }
     selectSection(section) {
         console.log('selectSection', section);
@@ -273,7 +175,7 @@ export class YouTubePlayer {
             this.displayNextSection(this.song?.sections[this.nextSection]);
         }
         else {
-            console.log(this.timestamp(), 'seekToSection end');
+            console.log(this.player?.timestamp(), 'seekToSection end');
             this.onPauseButton();
             this.currentSection = this.nextSection;
             this.nextSection = 0;
@@ -316,38 +218,17 @@ export class YouTubePlayer {
         this.timerId = undefined;
         if (this.song?.sections[this.currentSection].end !== this.song?.sections[section].start) {
             const gotoTime = this.song?.sections[section].start;
-            this.fullplayer?.seekTo(gotoTime, true);
-            this.player?.seekTo(gotoTime, true);
+            this.fullplayer?.seekTo(gotoTime);
+            this.player?.seekTo(gotoTime);
             const currentTime = this.player?.getCurrentTime();
-            console.log(this.timestamp(), 'seekToSection', section, this.rightPadTo3Digits(currentTime), gotoTime);
+            console.log(this.player?.timestamp(), 'seekToSection', section, YTPlayer.rightPadTo3Digits(currentTime), gotoTime);
         }
         else {
             this.setCheckTimer(this.nextSection);
         }
         this.currentSection = this.nextSection;
         this.nextSection = this.currentSection + 1;
-        console.log(this.timestamp(), 'seekToSection current=' + this.currentSection + ', next=' + this.nextSection);
-    }
-    timestamp() {
-        var newTimestamp = new Date();
-        const timestampText = newTimestamp.getMinutes() + ':' +
-            newTimestamp.getSeconds() + '.' +
-            this.padTo3Digits(newTimestamp.getMilliseconds());
-        var timeSpent = (newTimestamp.getTime() - this.lastTimestamp.getTime()) / 1000;
-        this.lastTimestamp = newTimestamp;
-        return timestampText + ' ' + this.rightPadTo3Digits(timeSpent);
-    }
-    rightPadTo3Digits(number) {
-        if (number % 1 === 0) {
-            return number + '.000';
-        }
-        if ((number * 10) % 1 === 0) {
-            return number + '00';
-        }
-        if ((number * 100) % 1 === 0) {
-            return number + '0';
-        }
-        return (Math.round(number * 1000) / 1000).toFixed(3);
+        console.log(this.player?.timestamp(), 'seekToSection current=' + this.currentSection + ', next=' + this.nextSection);
     }
     rightPadTo2Digits(number) {
         if (number % 1 === 0) {
