@@ -43,7 +43,7 @@ export class YouTubePlayer {
     loadPlayer(newSong) {
         this.song = newSong;
         this.player = YTPlayer.loadPlayer(this.song.videoId);
-        this.player.onReady = () => this.onReady();
+        this.player.onReady = (event) => this.onReady(event);
         this.player.onStateChange = (event) => this.onStateChange(event);
     }
     setCurrentSection(currentSection) {
@@ -52,9 +52,8 @@ export class YouTubePlayer {
     onFullScreenToggle() {
         if (!this.full || this.full.closed) {
             this.fullplayer = undefined;
-            const url = 'full?videoId=' + this.song?.videoId + '&title=' + encodeURIComponent(this.song?.title);
-            this.full = window.open(url, 'fullWindow', 'top=0,left=0,width=' + screen.width + ',height=' + screen.height +
-                'fullscreen=yes,directories=no,location=no,menubar=no,resizable=no,scrollbars=no,status=no,toolbar=no')
+            const url = `full?videoId=${this.song?.videoId}&title=${encodeURIComponent(this.song?.title)}`;
+            this.full = window.open(url, 'fullWindow', `top=0,left=0,width=${screen.width},height=${screen.height},fullscreen=yes,directories=no,location=no,menubar=no,resizable=no,scrollbars=no,status=no,toolbar=no`)
                 || undefined;
         }
         else {
@@ -106,7 +105,7 @@ export class YouTubePlayer {
             }
         }
     }
-    onReady() {
+    onReady(event) {
         this.displayVolumeValue();
     }
     onStateChange(event) {
@@ -125,13 +124,13 @@ export class YouTubePlayer {
         const hours = Math.floor(minutes / 60);
         if (hours > 0) {
             minutes = Math.floor(minutes % 60);
-            return hours + ':' + this.padTo2Digits(minutes) + ':' + this.padTo2Digits(seconds);
+            return `${hours}:${this.padTo2Digits(minutes)}:${this.padTo2Digits(seconds)}`;
         }
-        return minutes + ':' + seconds;
+        return `${minutes}:${seconds}`;
     }
     padTo2Digits(number) {
         if (number < 10) {
-            return '0' + number;
+            return `0${number}`;
         }
         return number.toString();
     }
@@ -156,9 +155,9 @@ export class YouTubePlayer {
         const endTime = this.song?.sections[section].end;
         const currentTime = this.player?.getCurrentTime();
         const timeout = endTime - currentTime - this.skipTime;
-        console.log('endTime:' + endTime + ', currentTime:' + currentTime + ', skipTime:' + this.skipTime);
+        console.log(`endTime:${endTime}, currentTime:${currentTime}, skipTime:${this.skipTime}`);
         if (timeout < 0) {
-            console.warn('endTime-currentTime-skipTime:' + timeout);
+            console.warn(`endTime-currentTime-skipTime:${timeout}`);
             //seekToNext();
         }
         this.timerId = setTimeout(() => this.seekToNext(), timeout * 1000);
@@ -228,7 +227,7 @@ export class YouTubePlayer {
         }
         this.currentSection = this.nextSection;
         this.nextSection = this.currentSection + 1;
-        console.log(this.player?.timestamp(), 'seekToSection current=' + this.currentSection + ', next=' + this.nextSection);
+        console.log(this.player?.timestamp(), `seekToSection current=${this.currentSection}, next=${this.nextSection}`);
     }
     rightPadTo2Digits(number) {
         if (number % 1 === 0) {

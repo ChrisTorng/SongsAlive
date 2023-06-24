@@ -9,13 +9,12 @@ export class YTPlayer {
         const player = new YTPlayer(videoId, onYouTubeIframeAPIReady);
         window.onYouTubeIframeAPIReady = () => player.onYouTubeIframeAPIReadyHandler();
         const tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
+        tag.src = 'https://www.youtube.com/iframe_api';
         const firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
         return player;
     }
     onYouTubeIframeAPIReadyHandler() {
-        //        const player = new YTPlayer('5HqZJr1kKq8');
         this.player = new YT.Player('player', {
             playerVars: {
                 origin: window.location.origin,
@@ -89,10 +88,10 @@ export class YTPlayer {
         }
         return !isMuted;
     }
-    onReadyHandler() {
+    onReadyHandler(event) {
         console.log(this.timestamp(), 'onReadyHandler');
         // Raise event before cueVideoById, or the volume will got undefined value
-        this.onReady?.();
+        this.onReady?.(event);
         this.player?.cueVideoById(this.videoId);
     }
     onStateChangeHandler(event) {
@@ -125,9 +124,9 @@ export class YTPlayer {
         console.log("onPlaybackRateChange", event.data);
     }
     onError(event) {
-        console.log("onError", event.data);
+        console.error("onError", event.data);
     }
-    // private onApiChange(event: any): void {
+    // private onApiChange(event: YT.PlayerEvent): void {
     //     console.log('onApiChange');
     //     console.log(player.getOptions());
     //     var options = player.getOptions('captions');
@@ -157,31 +156,29 @@ export class YTPlayer {
     }
     timestamp() {
         var newTimestamp = new Date();
-        const timestampText = newTimestamp.getMinutes() + ':' +
-            newTimestamp.getSeconds() + '.' +
-            YTPlayer.padTo3Digits(newTimestamp.getMilliseconds());
+        const timestampText = `${newTimestamp.getMinutes()}:${newTimestamp.getSeconds()}.${YTPlayer.padTo3Digits(newTimestamp.getMilliseconds())}`;
         var timeSpent = (newTimestamp.getTime() - this.lastTimestamp.getTime()) / 1000;
         this.lastTimestamp = newTimestamp;
-        return timestampText + ' ' + YTPlayer.rightPadTo3Digits(timeSpent);
+        return `${timestampText} ${YTPlayer.rightPadTo3Digits(timeSpent)}`;
     }
     static padTo3Digits(number) {
         if (number < 10) {
-            return '00' + number;
+            return `00${number}`;
         }
         if (number < 100) {
-            return '0' + number;
+            return `0${number}`;
         }
         return number.toString();
     }
     static rightPadTo3Digits(number) {
         if (number % 1 === 0) {
-            return number + '.000';
+            return `${number}.000`;
         }
         if ((number * 10) % 1 === 0) {
-            return number + '00';
+            return `${number}00`;
         }
         if ((number * 100) % 1 === 0) {
-            return number + '0';
+            return `${number}0`;
         }
         return (Math.round(number * 1000) / 1000).toFixed(3);
     }

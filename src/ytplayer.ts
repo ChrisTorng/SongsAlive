@@ -10,7 +10,7 @@ export class YTPlayer {
     private lastTimestamp = new Date();
 
     public onYouTubeIframeAPIReady?: () => void;
-    public onReady?: () => void;
+    public onReady?: (event: YT.PlayerEvent) => void;
     public onStateChange?: (event: YT.OnStateChangeEvent) => void;
 
     public static loadPlayer(videoId: string, onYouTubeIframeAPIReady?: () => void): YTPlayer {
@@ -18,7 +18,7 @@ export class YTPlayer {
         window.onYouTubeIframeAPIReady = () => player.onYouTubeIframeAPIReadyHandler();
 
         const tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
+        tag.src = 'https://www.youtube.com/iframe_api';
         const firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
 
@@ -26,7 +26,6 @@ export class YTPlayer {
     }
 
     private onYouTubeIframeAPIReadyHandler(): void {
-//        const player = new YTPlayer('5HqZJr1kKq8');
         this.player = new YT.Player('player', {
             playerVars: {
                 origin: window.location.origin,
@@ -113,10 +112,10 @@ export class YTPlayer {
         return !isMuted;
     }
     
-    private onReadyHandler(): void {
+    private onReadyHandler(event: YT.PlayerEvent): void {
         console.log(this.timestamp(), 'onReadyHandler');
         // Raise event before cueVideoById, or the volume will got undefined value
-        this.onReady?.();
+        this.onReady?.(event);
         this.player?.cueVideoById(this.videoId!);
     }
 
@@ -145,19 +144,19 @@ export class YTPlayer {
         }
     }
 
-    private onPlaybackQualityChange(event: any): void {
+    private onPlaybackQualityChange(event: YT.OnPlaybackQualityChangeEvent): void {
         console.log("onPlaybackQualityChange", event.data);
     }
 
-    private onPlaybackRateChange(event: any): void {
+    private onPlaybackRateChange(event: YT.OnPlaybackRateChangeEvent): void {
         console.log("onPlaybackRateChange", event.data);
     }
 
-    private onError(event: any): void {
-        console.log("onError", event.data);
+    private onError(event: YT.OnErrorEvent): void {
+        console.error("onError", event.data);
     }
 
-    // private onApiChange(event: any): void {
+    // private onApiChange(event: YT.PlayerEvent): void {
     //     console.log('onApiChange');
     //     console.log(player.getOptions());
 
@@ -195,36 +194,35 @@ export class YTPlayer {
 
     public timestamp(): string {
         var newTimestamp = new Date();
-        const timestampText = newTimestamp.getMinutes() + ':' +
-            newTimestamp.getSeconds() + '.' +
-            YTPlayer.padTo3Digits(newTimestamp.getMilliseconds());
+        const timestampText =
+            `${newTimestamp.getMinutes()}:${newTimestamp.getSeconds()}.${YTPlayer.padTo3Digits(newTimestamp.getMilliseconds())}`;
         var timeSpent = (newTimestamp.getTime() - this.lastTimestamp.getTime()) / 1000;
 
         this.lastTimestamp = newTimestamp;
-        return timestampText + ' ' + YTPlayer.rightPadTo3Digits(timeSpent);
+        return `${timestampText} ${YTPlayer.rightPadTo3Digits(timeSpent)}`;
     }
     
     public static padTo3Digits(number: number): string {
         if (number < 10) {
-            return '00' + number;
+            return `00${number}`;
         }
         if (number < 100) {
-            return '0' + number;
+            return `0${number}`;
         }
         return number.toString();
     }
     
     public static rightPadTo3Digits(number: number): string {
         if (number % 1 === 0) {
-            return number + '.000';
+            return `${number}.000`;
         }
 
         if ((number * 10) % 1 === 0) {
-            return number + '00';
+            return `${number}00`
         }
 
         if ((number * 100) % 1 === 0) {
-            return number + '0';
+            return `${number}0`;
         }
 
         return (Math.round(number * 1000) / 1000).toFixed(3);
