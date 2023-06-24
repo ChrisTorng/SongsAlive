@@ -1,3 +1,4 @@
+import { Utils } from './utils.js';
 import { YTPlayer } from './ytplayer.js';
 export class YouTubePlayer {
     volumeValue = document.getElementById('volumeValue');
@@ -124,15 +125,9 @@ export class YouTubePlayer {
         const hours = Math.floor(minutes / 60);
         if (hours > 0) {
             minutes = Math.floor(minutes % 60);
-            return `${hours}:${this.padTo2Digits(minutes)}:${this.padTo2Digits(seconds)}`;
+            return `${hours}:${Utils.padTo2Digits(minutes)}:${Utils.padTo2Digits(seconds)}`;
         }
         return `${minutes}:${seconds}`;
-    }
-    padTo2Digits(number) {
-        if (number < 10) {
-            return `0${number}`;
-        }
-        return number.toString();
     }
     onPlayButton() {
         this.clearTimer();
@@ -161,7 +156,7 @@ export class YouTubePlayer {
             //seekToNext();
         }
         this.timerId = setTimeout(() => this.seekToNext(), timeout * 1000);
-        console.log(this.player?.timestamp(), 'setCheckTimer', YTPlayer.rightPadTo3Digits(currentTime), endTime);
+        console.log(this.player?.timestamp(), 'setCheckTimer', Utils.rightPadTo3Digits(currentTime), endTime);
     }
     selectSection(section) {
         console.log('selectSection', section);
@@ -193,7 +188,7 @@ export class YouTubePlayer {
         this.nextSectionTitle.innerText = section.title;
         const duration = section.end - section.start;
         if (duration != 0) {
-            this.nextSectionDuration.innerText = this.rightPadTo2Digits(duration);
+            this.nextSectionDuration.innerText = Utils.rightPadTo2Digits(duration);
         }
         else {
             this.nextSectionDuration.innerText = '';
@@ -205,7 +200,7 @@ export class YouTubePlayer {
         this.currentSectionTitle.innerText = section.title;
         const duration = section.end - section.start;
         if (duration != 0) {
-            this.currentSectionDuration.innerText = this.rightPadTo2Digits(duration);
+            this.currentSectionDuration.innerText = Utils.rightPadTo2Digits(duration);
         }
         else {
             this.currentSectionDuration.innerText = '';
@@ -220,7 +215,7 @@ export class YouTubePlayer {
             this.fullplayer?.seekTo(gotoTime);
             this.player?.seekTo(gotoTime);
             const currentTime = this.player?.getCurrentTime();
-            console.log(this.player?.timestamp(), 'seekToSection', section, YTPlayer.rightPadTo3Digits(currentTime), gotoTime);
+            console.log(this.player?.timestamp(), 'seekToSection', section, Utils.rightPadTo3Digits(currentTime), gotoTime);
         }
         else {
             this.setCheckTimer(this.nextSection);
@@ -228,14 +223,5 @@ export class YouTubePlayer {
         this.currentSection = this.nextSection;
         this.nextSection = this.currentSection + 1;
         console.log(this.player?.timestamp(), `seekToSection current=${this.currentSection}, next=${this.nextSection}`);
-    }
-    rightPadTo2Digits(number) {
-        if (number % 1 === 0) {
-            return number + '.00';
-        }
-        if ((number * 10) % 1 === 0) {
-            return number + '0';
-        }
-        return (Math.round(number * 100) / 100).toFixed(2);
     }
 }

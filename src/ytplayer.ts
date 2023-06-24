@@ -1,3 +1,5 @@
+import { Utils } from "./utils.js";
+
 declare global {
     interface Window {
         onYouTubeIframeAPIReady:  () => void;
@@ -195,36 +197,10 @@ export class YTPlayer {
     public timestamp(): string {
         var newTimestamp = new Date();
         const timestampText =
-            `${newTimestamp.getMinutes()}:${newTimestamp.getSeconds()}.${YTPlayer.padTo3Digits(newTimestamp.getMilliseconds())}`;
+            `${newTimestamp.getMinutes()}:${newTimestamp.getSeconds()}.${Utils.padTo3Digits(newTimestamp.getMilliseconds())}`;
         var timeSpent = (newTimestamp.getTime() - this.lastTimestamp.getTime()) / 1000;
 
         this.lastTimestamp = newTimestamp;
-        return `${timestampText} ${YTPlayer.rightPadTo3Digits(timeSpent)}`;
-    }
-    
-    public static padTo3Digits(number: number): string {
-        if (number < 10) {
-            return `00${number}`;
-        }
-        if (number < 100) {
-            return `0${number}`;
-        }
-        return number.toString();
-    }
-    
-    public static rightPadTo3Digits(number: number): string {
-        if (number % 1 === 0) {
-            return `${number}.000`;
-        }
-
-        if ((number * 10) % 1 === 0) {
-            return `${number}00`
-        }
-
-        if ((number * 100) % 1 === 0) {
-            return `${number}0`;
-        }
-
-        return (Math.round(number * 1000) / 1000).toFixed(3);
+        return `${timestampText} ${Utils.rightPadTo3Digits(timeSpent)}`;
     }
 }
