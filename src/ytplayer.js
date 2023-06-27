@@ -153,7 +153,7 @@ export class YTPlayer {
         return this.player?.getCurrentTime();
     }
     getCurrentTime() {
-        return this.player?.getCurrentTime();
+        return Utils.roundTo3Digits(this.player?.getCurrentTime() || 0);
     }
     timestamp() {
         var newTimestamp = new Date();

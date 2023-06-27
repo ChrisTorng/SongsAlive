@@ -191,7 +191,7 @@ export class YTPlayer {
     }
 
     public getCurrentTime(): number {
-        return this.player?.getCurrentTime()!;
+        return Utils.roundTo3Digits(this.player?.getCurrentTime() || 0);
     }
 
     public timestamp(): string {

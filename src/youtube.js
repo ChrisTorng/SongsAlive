@@ -95,16 +95,7 @@ export class YouTubePlayer {
     }
     onMuteButton() {
         const isUnmuted = this.player?.muteToggle();
-        if (isUnmuted) {
-            if (this.muteButton) {
-                this.muteButton.innerText = 'Unmute';
-            }
-        }
-        else {
-            if (this.muteButton) {
-                this.muteButton.innerText = 'Mute';
-            }
-        }
+        this.muteButton.innerText = isUnmuted ? 'Unmute' : 'Mute';
     }
     onReady(event) {
         this.displayVolumeValue();
@@ -119,16 +110,16 @@ export class YouTubePlayer {
                 break;
         }
     }
-    duration(duration) {
-        const seconds = Math.round(duration % 60 * 1000) / 1000;
-        let minutes = Math.floor(duration / 60);
-        const hours = Math.floor(minutes / 60);
-        if (hours > 0) {
-            minutes = Math.floor(minutes % 60);
-            return `${hours}:${Utils.padTo2Digits(minutes)}:${Utils.padTo2Digits(seconds)}`;
-        }
-        return `${minutes}:${seconds}`;
-    }
+    // private duration(duration: number): string {
+    //     const seconds = Math.round(duration % 60 * 1000) / 1000;
+    //     let minutes = Math.floor(duration / 60);
+    //     const hours = Math.floor(minutes / 60);
+    //     if (hours > 0) {
+    //         minutes = Math.floor(minutes % 60);
+    //         return `${hours}:${Utils.padTo2Digits(minutes)}:${Utils.padTo2Digits(seconds)}`;
+    //     }
+    //     return `${minutes}:${seconds}`;
+    // }
     onPlayButton() {
         this.clearTimer();
         const startTime = this.song?.sections[this.nextSection].start;
@@ -181,9 +172,9 @@ export class YouTubePlayer {
         }
         this.allSections.innerHTML += this.song?.sections[this.currentSection].title;
     }
-    clearNextSection() {
-        this.displayNextSection({ title: '', detail: '', start: -1, end: -1 });
-    }
+    // private clearNextSection(): void {
+    //     this.displayNextSection({ title: '', detail: '', start: -1, end: -1});
+    // }
     displayNextSection(section) {
         this.nextSectionTitle.innerText = section.title;
         const duration = section.end - section.start;

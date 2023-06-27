@@ -43,4 +43,8 @@ export class Utils {
 
         return (Math.round(number * 1000) / 1000).toFixed(3);
     }
+
+    public static roundTo3Digits(number: number): number {
+        return parseFloat(number.toFixed(3));
+    }
 }

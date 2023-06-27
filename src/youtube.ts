@@ -57,8 +57,8 @@ export class YouTubePlayer {
     public setSelectSections(): void {
         const selectSections = (<HTMLCollectionOf<HTMLLIElement>>document.getElementsByClassName('selectSection'))
         Array.from(selectSections).forEach((li: HTMLLIElement) => {
-                li.addEventListener('click', () => this.selectSection(parseInt(li.dataset.index!)));
-            });
+            li.addEventListener('click', () => this.selectSection(parseInt(li.dataset.index!)));
+        });
     }
 
     public loadPlayer(newSong: Song): void {
@@ -121,16 +121,7 @@ export class YouTubePlayer {
 
     private onMuteButton(): void {
         const isUnmuted = this.player?.muteToggle();
-
-        if (isUnmuted) {
-            if (this.muteButton) {
-                this.muteButton.innerText = 'Unmute';
-            }
-        } else {
-            if (this.muteButton) {
-                this.muteButton.innerText = 'Mute';
-            }
-        }
+        this.muteButton.innerText = isUnmuted ? 'Unmute' : 'Mute';
     }
     
     private onReady(event: YT.PlayerEvent): void {
@@ -149,17 +140,17 @@ export class YouTubePlayer {
         }
     }
 
-    private duration(duration: number): string {
-        const seconds = Math.round(duration % 60 * 1000) / 1000;
-        let minutes = Math.floor(duration / 60);
-        const hours = Math.floor(minutes / 60);
-        if (hours > 0) {
-            minutes = Math.floor(minutes % 60);
-            return `${hours}:${Utils.padTo2Digits(minutes)}:${Utils.padTo2Digits(seconds)}`;
-        }
+    // private duration(duration: number): string {
+    //     const seconds = Math.round(duration % 60 * 1000) / 1000;
+    //     let minutes = Math.floor(duration / 60);
+    //     const hours = Math.floor(minutes / 60);
+    //     if (hours > 0) {
+    //         minutes = Math.floor(minutes % 60);
+    //         return `${hours}:${Utils.padTo2Digits(minutes)}:${Utils.padTo2Digits(seconds)}`;
+    //     }
 
-        return `${minutes}:${seconds}`;
-    }
+    //     return `${minutes}:${seconds}`;
+    // }
 
     private onPlayButton(): void {
         this.clearTimer();
@@ -224,9 +215,9 @@ export class YouTubePlayer {
         this.allSections.innerHTML += this.song?.sections[this.currentSection].title;
     }
 
-    private clearNextSection(): void {
-        this.displayNextSection({ title: '', detail: '', start: -1, end: -1});
-    }
+    // private clearNextSection(): void {
+    //     this.displayNextSection({ title: '', detail: '', start: -1, end: -1});
+    // }
 
     private displayNextSection(section: SongSection): void {
         this.nextSectionTitle.innerText = section.title;
