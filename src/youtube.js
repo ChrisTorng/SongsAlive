@@ -40,15 +40,15 @@ export class YouTubePlayer {
         Array.from(selectSections).forEach((li) => {
             li.addEventListener('click', () => this.selectSection(parseInt(li.dataset.index)));
         });
+        this.currentSection = selectSections.length - 1;
+        this.nextSection = 0;
+        this.selectSection(this.nextSection);
     }
     loadPlayer(newSong) {
         this.song = newSong;
         this.player = YTPlayer.loadPlayer(this.song.videoId);
         this.player.onReady = (event) => this.onReady(event);
         this.player.onStateChange = (event) => this.onStateChange(event);
-    }
-    setCurrentSection(currentSection) {
-        this.currentSection = currentSection;
     }
     onFullScreenToggle() {
         if (!this.full || this.full.closed) {
@@ -147,7 +147,7 @@ export class YouTubePlayer {
             //seekToNext();
         }
         this.timerId = setTimeout(() => this.seekToNext(), timeout * 1000);
-        console.log(this.player?.timestamp(), 'setCheckTimer', Utils.rightPadTo3Digits(currentTime), endTime);
+        console.log(this.player?.timestamp(), 'setCheckTimer', Utils.rightPadTo3Digits(timeout), endTime);
     }
     selectSection(section) {
         console.log('selectSection', section);

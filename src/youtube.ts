@@ -59,6 +59,10 @@ export class YouTubePlayer {
         Array.from(selectSections).forEach((li: HTMLLIElement) => {
             li.addEventListener('click', () => this.selectSection(parseInt(li.dataset.index!)));
         });
+
+        this.currentSection = selectSections.length - 1;
+        this.nextSection = 0;
+        this.selectSection(this.nextSection);
     }
 
     public loadPlayer(newSong: Song): void {
@@ -66,10 +70,6 @@ export class YouTubePlayer {
         this.player = YTPlayer.loadPlayer(this.song.videoId!);
         this.player.onReady = (event) => this.onReady(event);
         this.player.onStateChange = (event) => this.onStateChange(event);
-    }
-
-    public setCurrentSection(currentSection: number): void {
-        this.currentSection = currentSection;
     }
 
     private onFullScreenToggle(): void {
@@ -183,7 +183,7 @@ export class YouTubePlayer {
         }
 
         this.timerId = setTimeout(() => this.seekToNext(), timeout * 1000);
-        console.log(this.player?.timestamp(), 'setCheckTimer', Utils.rightPadTo3Digits(currentTime), endTime);
+        console.log(this.player?.timestamp(), 'setCheckTimer', Utils.rightPadTo3Digits(timeout), endTime);
     }
 
     private selectSection(section: number): void {
