@@ -1,4 +1,7 @@
 # [SongsAlive](https://christorng.github.io/SongsAlive/src/)
+
+將 YouTube 影片分段，可直接點選跳到任意段落。比如可以任意唱副歌多次，或隨時跳回前奏或間奏。這是為教會敬拜所設計的工具，支援雙螢幕顯示。[示範網頁](https://christorng.github.io/SongsAlive/src/)
+
 Live remix YouTube song's sections. Designed for church worship service. [Live demo](https://christorng.github.io/SongsAlive/src/).
 
 You need dual screen to show the full screen player on the projecting screen.
