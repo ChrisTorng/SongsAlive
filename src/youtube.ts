@@ -31,6 +31,8 @@ export class YouTubePlayer {
         <HTMLDivElement>document.getElementById('songProgressBar')!;
     private readonly songProgressFill: HTMLDivElement =
         <HTMLDivElement>document.getElementById('songProgressFill')!;
+    private readonly songProgressMarkers: HTMLDivElement =
+        <HTMLDivElement>document.getElementById('songProgressMarkers')!;
     private readonly songProgressTime: HTMLDivElement =
         <HTMLDivElement>document.getElementById('songProgressTime')!;
     private readonly segmentProgressBar: HTMLDivElement =
@@ -80,6 +82,7 @@ export class YouTubePlayer {
         this.currentSection = selectSections.length - 1;
         this.nextSection = 0;
         this.selectSection(this.nextSection);
+        this.renderSongProgressMarkers();
         this.updateProgressDisplay();
     }
 
@@ -383,6 +386,32 @@ export class YouTubePlayer {
                 .filter((section) => section.start >= 0)
                 .map((section) => section.end ?? section.start),
             0);
+    }
+
+    private renderSongProgressMarkers(): void {
+        const songDuration = this.getSongDuration();
+        const sections = this.song?.sections ?? [];
+
+        if (songDuration <= 0) {
+            this.songProgressMarkers.innerHTML = '';
+            return;
+        }
+
+        this.songProgressMarkers.innerHTML = sections
+            .filter((section) => section.start >= 0)
+            .map((section) => {
+                const left = Math.min(Math.max(section.start / songDuration, 0), 1) * 100;
+                return `<div class="progressMarker" style="left: ${left}%" title="${this.escapeHtml(section.title)}"></div>`;
+            })
+            .join('');
+    }
+
+    private escapeHtml(text: string): string {
+        return text
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
     }
 
     private updateCurrentSectionForTime(currentTime: number): void {

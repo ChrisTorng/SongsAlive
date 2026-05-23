@@ -15,6 +15,7 @@ export class YouTubePlayer {
     nextSectionDetail = document.getElementById('nextSectionDetail');
     songProgressBar = document.getElementById('songProgressBar');
     songProgressFill = document.getElementById('songProgressFill');
+    songProgressMarkers = document.getElementById('songProgressMarkers');
     songProgressTime = document.getElementById('songProgressTime');
     segmentProgressBar = document.getElementById('segmentProgressBar');
     segmentProgressFill = document.getElementById('segmentProgressFill');
@@ -54,6 +55,7 @@ export class YouTubePlayer {
         this.currentSection = selectSections.length - 1;
         this.nextSection = 0;
         this.selectSection(this.nextSection);
+        this.renderSongProgressMarkers();
         this.updateProgressDisplay();
     }
     loadPlayer(newSong) {
@@ -308,6 +310,28 @@ export class YouTubePlayer {
         return Math.max(songEnd, ...sections
             .filter((section) => section.start >= 0)
             .map((section) => section.end ?? section.start), 0);
+    }
+    renderSongProgressMarkers() {
+        const songDuration = this.getSongDuration();
+        const sections = this.song?.sections ?? [];
+        if (songDuration <= 0) {
+            this.songProgressMarkers.innerHTML = '';
+            return;
+        }
+        this.songProgressMarkers.innerHTML = sections
+            .filter((section) => section.start >= 0)
+            .map((section) => {
+            const left = Math.min(Math.max(section.start / songDuration, 0), 1) * 100;
+            return `<div class="progressMarker" style="left: ${left}%" title="${this.escapeHtml(section.title)}"></div>`;
+        })
+            .join('');
+    }
+    escapeHtml(text) {
+        return text
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
     }
     updateCurrentSectionForTime(currentTime) {
         const sections = this.song?.sections ?? [];

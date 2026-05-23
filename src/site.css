@@ -78,6 +78,7 @@ body {
 }
 
 .progressBar {
+    position: relative;
     height: 8pt;
     background: #d5d5d5;
     cursor: pointer;
@@ -90,6 +91,21 @@ body {
 .progressFill {
     width: 0%;
     height: 100%;
+}
+
+.progressMarkers {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.progressMarker {
+    position: absolute;
+    top: -2pt;
+    bottom: -2pt;
+    width: 1px;
+    background: #111;
+    opacity: 0.75;
 }
 
 .songProgressFill {
