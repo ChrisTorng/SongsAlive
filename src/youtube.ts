@@ -236,7 +236,7 @@ export class YouTubePlayer {
 
         const duration = section.end! - section.start;
         if (duration != 0) {
-            this.nextSectionDuration.innerText = Utils.rightPadTo2Digits(duration);
+            this.nextSectionDuration.innerText = Utils.formatDuration(duration);
         } else {
             this.nextSectionDuration.innerText = '';
         }
@@ -249,7 +249,7 @@ export class YouTubePlayer {
 
         const duration = section.end! - section.start;
         if (duration != 0) {
-            this.currentSectionDuration.innerText = Utils.rightPadTo2Digits(duration);
+            this.currentSectionDuration.innerText = Utils.formatDuration(duration);
         } else {
             this.currentSectionDuration.innerText = '';
         }

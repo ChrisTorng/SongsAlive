@@ -1,3 +1,4 @@
+import { Utils } from './utils.js';
 export class SongProcessor {
     songId;
     constructor() {
@@ -85,7 +86,7 @@ export class SongProcessor {
             const duration = section.end - section.start;
             sectionsHtml += `<li class="selectSection" data-index="${index}" title="${section.detail}">
                 <div>${section.title}</div>
-                ${duration !== 0 ? `<div>${this.rightPadTo2Digits(duration)}</div>` : '<div>&nbsp;</div>'}
+                ${duration !== 0 ? `<div>${Utils.formatDuration(duration)}</div>` : '<div>&nbsp;</div>'}
                 <div class="sectionsDetail">${section.detail}</div>
                 </li>\n`;
         });
@@ -123,14 +124,5 @@ export class SongProcessor {
         if (lastSection?.start === -1 && lastSection.end === -1) {
             sections.pop();
         }
-    }
-    rightPadTo2Digits(number) {
-        if (number % 1 === 0) {
-            return number + '.00';
-        }
-        if ((number * 10) % 1 === 0) {
-            return number + '0';
-        }
-        return (Math.round(number * 100) / 100).toFixed(2);
     }
 }
