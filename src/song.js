@@ -9,7 +9,7 @@ export class SongProcessor {
         try {
             const response = await fetch(`songs/${this.songId}.json`);
             const result = await response.json();
-            return result;
+            return this.normalizeSong(result);
         }
         catch (err) {
             const player = document.getElementById('player');
@@ -17,6 +17,53 @@ export class SongProcessor {
                 player.innerText = err.toString();
             }
         }
+    }
+    normalizeSong(song) {
+        return {
+            title: song.title,
+            videoId: song.videoId,
+            end: song.end !== undefined ? this.parseTime(song.end, 'song.end') : undefined,
+            duration: song.duration !== undefined ? this.parseTime(song.duration, 'song.duration') : undefined,
+            sections: song.sections.map((section, index) => ({
+                title: section.title,
+                detail: section.detail,
+                start: this.parseTime(section.start, `sections[${index}].start`),
+                end: section.end !== undefined
+                    ? this.parseTime(section.end, `sections[${index}].end`)
+                    : undefined,
+            })),
+        };
+    }
+    parseTime(time, fieldName) {
+        if (typeof time === 'number') {
+            if (Number.isFinite(time)) {
+                return time;
+            }
+            throw new Error(`${fieldName} must be a finite number.`);
+        }
+        const parts = time.trim().split(':');
+        if (parts.length < 1 || parts.length > 3 || parts.some((part) => part === '')) {
+            throw new Error(`${fieldName} has invalid time format: "${time}".`);
+        }
+        const multipliers = [1, 60, 3600].slice(0, parts.length).reverse();
+        const seconds = parts.reduce((total, part, index) => {
+            const isLastPart = index === parts.length - 1;
+            const isValidPart = isLastPart
+                ? /^\d+(\.\d+)?$/.test(part)
+                : /^\d+$/.test(part);
+            if (!isValidPart) {
+                throw new Error(`${fieldName} has invalid time format: "${time}".`);
+            }
+            const value = Number(part);
+            if (parts.length > 1 && isLastPart && value >= 60) {
+                throw new Error(`${fieldName} seconds must be less than 60: "${time}".`);
+            }
+            if (parts.length === 3 && index === 1 && value >= 60) {
+                throw new Error(`${fieldName} minutes must be less than 60: "${time}".`);
+            }
+            return total + value * multipliers[index];
+        }, 0);
+        return seconds;
     }
     processSong(song, songEnd) {
         this.resolveSectionEnds(song, songEnd);
