@@ -63,6 +63,23 @@ export class Utils {
         return `${seconds}.${fraction}`;
     }
 
+    public static formatDurationForPosition(duration: number): string {
+        const totalSeconds = Math.floor(duration);
+        const seconds = totalSeconds % 60;
+        const minutes = Math.floor(totalSeconds / 60) % 60;
+        const hours = Math.floor(totalSeconds / 3600);
+
+        if (hours > 0) {
+            return `${hours}:${this.padTo2Digits(minutes)}:${this.padTo2Digits(seconds)}`;
+        }
+
+        if (totalSeconds >= 60) {
+            return `${Math.floor(totalSeconds / 60)}:${this.padTo2Digits(seconds)}`;
+        }
+
+        return seconds.toString();
+    }
+
     private static trimFraction(fraction: string): string {
         return fraction.replace(/0+$/, '') || '0';
     }

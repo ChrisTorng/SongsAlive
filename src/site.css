@@ -64,6 +64,53 @@ body {
     width: 280px;
 }
 
+.segmentProgress {
+    display: flex;
+    align-items: center;
+    gap: 8pt;
+    width: calc(100% - 480px - 50px);
+    margin-bottom: 5pt;
+    padding-left: 3pt;
+}
+
+.progressBars {
+    flex: 1;
+}
+
+.progressBar {
+    height: 8pt;
+    background: #d5d5d5;
+    cursor: pointer;
+}
+
+.progressBar + .progressBar {
+    margin-top: 3pt;
+}
+
+.progressFill {
+    width: 0%;
+    height: 100%;
+}
+
+.songProgressFill {
+    background: #555;
+}
+
+.segmentProgressFill {
+    background: #337ab7;
+}
+
+.progressTimes {
+    min-width: 190px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    text-align: right;
+}
+
+.progressTime {
+    line-height: 1.1em;
+}
+
 .sectionDuration {
     margin-left: 7pt;
 }

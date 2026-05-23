@@ -13,12 +13,19 @@ export class YouTubePlayer {
     nextSectionTitle = document.getElementById('nextSectionTitle');
     nextSectionDuration = document.getElementById('nextSectionDuration');
     nextSectionDetail = document.getElementById('nextSectionDetail');
+    songProgressBar = document.getElementById('songProgressBar');
+    songProgressFill = document.getElementById('songProgressFill');
+    songProgressTime = document.getElementById('songProgressTime');
+    segmentProgressBar = document.getElementById('segmentProgressBar');
+    segmentProgressFill = document.getElementById('segmentProgressFill');
+    segmentProgressTime = document.getElementById('segmentProgressTime');
     skipTime = 0.1;
     song;
     fullplayer;
     player;
     full;
     timerId;
+    progressTimerId;
     currentSection = 0;
     nextSection = 0;
     isSongReady = false;
@@ -36,6 +43,8 @@ export class YouTubePlayer {
         this.volumeUpButton.addEventListener('click', this.onVolumeUpButton.bind(this));
         this.volumeDownButton.addEventListener('click', this.onVolumeDownButton.bind(this));
         this.muteButton.addEventListener('click', this.onMuteButton.bind(this));
+        this.songProgressBar.addEventListener('click', this.onSongProgressBar.bind(this));
+        this.segmentProgressBar.addEventListener('click', this.onSegmentProgressBar.bind(this));
     }
     setSelectSections() {
         const selectSections = document.getElementsByClassName('selectSection');
@@ -45,6 +54,7 @@ export class YouTubePlayer {
         this.currentSection = selectSections.length - 1;
         this.nextSection = 0;
         this.selectSection(this.nextSection);
+        this.updateProgressDisplay();
     }
     loadPlayer(newSong) {
         this.song = newSong;
@@ -110,6 +120,11 @@ export class YouTubePlayer {
                 break;
             case YT.PlayerState.PLAYING:
                 this.setCheckTimer();
+                this.startProgressTimer();
+                break;
+            case YT.PlayerState.PAUSED:
+            case YT.PlayerState.ENDED:
+                this.clearProgressTimer();
                 break;
         }
     }
@@ -148,9 +163,11 @@ export class YouTubePlayer {
         this.displayCurrentSection(section);
         this.displayNextSection(this.song?.sections[this.nextSection]);
         this.addPlayedSection(section);
+        this.updateProgressDisplay(startTime);
     }
     onPauseButton() {
         this.clearTimer();
+        this.clearProgressTimer();
         this.player?.pause();
         this.fullplayer?.pause();
     }
@@ -159,6 +176,18 @@ export class YouTubePlayer {
             clearTimeout(this.timerId);
             this.timerId = undefined;
         }
+    }
+    startProgressTimer() {
+        this.clearProgressTimer();
+        this.updateProgressDisplay();
+        this.progressTimerId = window.setInterval(() => this.updateProgressDisplay(), 200);
+    }
+    clearProgressTimer() {
+        if (this.progressTimerId) {
+            clearInterval(this.progressTimerId);
+            this.progressTimerId = undefined;
+        }
+        this.updateProgressDisplay();
     }
     setCheckTimer(section = this.currentSection) {
         const endTime = this.song?.sections[section].end;
@@ -224,6 +253,75 @@ export class YouTubePlayer {
         }
         this.currentSectionDetail.innerText = section.detail;
         this.currentSectionDetail.title = section.detail;
+        this.updateProgressDisplay();
+    }
+    onSegmentProgressBar(event) {
+        const section = this.song?.sections[this.currentSection];
+        if (!section || section.start < 0 || section.end === undefined || section.end <= section.start) {
+            return;
+        }
+        const rect = this.segmentProgressBar.getBoundingClientRect();
+        const ratio = Math.min(Math.max((event.clientX - rect.left) / rect.width, 0), 1);
+        const gotoTime = section.start + (section.end - section.start) * ratio;
+        this.clearTimer();
+        this.player?.play(gotoTime);
+        this.fullplayer?.play(gotoTime);
+        this.updateProgressDisplay(gotoTime);
+    }
+    onSongProgressBar(event) {
+        const songDuration = this.getSongDuration();
+        if (songDuration <= 0) {
+            return;
+        }
+        const rect = this.songProgressBar.getBoundingClientRect();
+        const ratio = Math.min(Math.max((event.clientX - rect.left) / rect.width, 0), 1);
+        const gotoTime = songDuration * ratio;
+        this.clearTimer();
+        this.player?.play(gotoTime);
+        this.fullplayer?.play(gotoTime);
+        this.updateCurrentSectionForTime(gotoTime);
+        this.updateProgressDisplay(gotoTime);
+    }
+    updateProgressDisplay(currentTime = this.player?.getCurrentTime() ?? 0) {
+        const section = this.song?.sections[this.currentSection];
+        const songDuration = this.getSongDuration();
+        const songElapsed = songDuration > 0 ? Math.min(Math.max(currentTime, 0), songDuration) : Math.max(currentTime, 0);
+        const songProgress = songDuration > 0 ? songElapsed / songDuration : 0;
+        this.songProgressFill.style.width = `${songProgress * 100}%`;
+        this.songProgressTime.innerText =
+            `${Utils.formatDurationForPosition(songElapsed)} / ${Utils.formatDuration(songDuration)}`;
+        if (!section || section.start < 0 || section.end === undefined || section.end <= section.start) {
+            this.segmentProgressFill.style.width = '0%';
+            this.segmentProgressTime.innerText = '0 / 0.0';
+            return;
+        }
+        const sectionDuration = section.end - section.start;
+        const sectionElapsed = Math.min(Math.max(currentTime - section.start, 0), sectionDuration);
+        const progress = sectionDuration > 0 ? sectionElapsed / sectionDuration : 0;
+        this.segmentProgressFill.style.width = `${progress * 100}%`;
+        this.segmentProgressTime.innerText =
+            `${Utils.formatDurationForPosition(sectionElapsed)} / ${Utils.formatDuration(sectionDuration)}`;
+    }
+    getSongDuration() {
+        const sections = this.song?.sections ?? [];
+        const songEnd = this.song?.end ?? this.song?.duration ?? 0;
+        return Math.max(songEnd, ...sections
+            .filter((section) => section.start >= 0)
+            .map((section) => section.end ?? section.start), 0);
+    }
+    updateCurrentSectionForTime(currentTime) {
+        const sections = this.song?.sections ?? [];
+        const sectionIndex = sections.findIndex((section) => section.start >= 0 &&
+            section.end !== undefined &&
+            currentTime >= section.start &&
+            currentTime < section.end);
+        if (sectionIndex < 0) {
+            return;
+        }
+        this.currentSection = sectionIndex;
+        this.nextSection = sectionIndex + 1;
+        this.displayCurrentSection(sections[this.currentSection]);
+        this.displayNextSection(sections[this.nextSection]);
     }
     seekToSection(section) {
         this.timerId = undefined;
