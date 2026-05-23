@@ -132,9 +132,22 @@ export class YouTubePlayer {
     // }
     onPlayButton() {
         this.clearTimer();
-        const startTime = this.song?.sections[this.nextSection].start;
+        const section = this.song?.sections[this.nextSection];
+        if (!section) {
+            return;
+        }
+        if (section.start < 0) {
+            this.onPauseButton();
+            return;
+        }
+        this.currentSection = this.nextSection;
+        this.nextSection = this.currentSection + 1;
+        const startTime = section.start;
         this.player?.play(startTime);
         this.fullplayer?.play(startTime);
+        this.displayCurrentSection(section);
+        this.displayNextSection(this.song?.sections[this.nextSection]);
+        this.addPlayedSection(section);
     }
     onPauseButton() {
         this.clearTimer();
@@ -177,10 +190,13 @@ export class YouTubePlayer {
             this.displayNextSection(this.song?.sections[this.nextSection]);
         }
         this.displayCurrentSection(this.song?.sections[this.currentSection]);
+        this.addPlayedSection(this.song?.sections[this.currentSection]);
+    }
+    addPlayedSection(section) {
         if (this.allSections.innerHTML.length !== 0) {
             this.allSections.innerHTML += ', ';
         }
-        this.allSections.innerHTML += this.song?.sections[this.currentSection].title;
+        this.allSections.innerHTML += section.title;
     }
     // private clearNextSection(): void {
     //     this.displayNextSection({ title: '', detail: '', start: -1, end: -1});

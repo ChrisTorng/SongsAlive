@@ -166,9 +166,24 @@ export class YouTubePlayer {
 
     private onPlayButton(): void {
         this.clearTimer();
-        const startTime = this.song?.sections[this.nextSection].start!;
+        const section = this.song?.sections[this.nextSection];
+        if (!section) {
+            return;
+        }
+
+        if (section.start < 0) {
+            this.onPauseButton();
+            return;
+        }
+
+        this.currentSection = this.nextSection;
+        this.nextSection = this.currentSection + 1;
+        const startTime = section.start;
         this.player?.play(startTime);
         this.fullplayer?.play(startTime);
+        this.displayCurrentSection(section);
+        this.displayNextSection(this.song?.sections[this.nextSection]!);
+        this.addPlayedSection(section);
     }
 
     private onPauseButton(): void {
@@ -221,10 +236,14 @@ export class YouTubePlayer {
 
         this.displayCurrentSection(this.song?.sections[this.currentSection]!);
 
+        this.addPlayedSection(this.song?.sections[this.currentSection]!);
+    }
+
+    private addPlayedSection(section: SongSection): void {
         if (this.allSections.innerHTML.length !== 0) {
             this.allSections.innerHTML += ', '
         }
-        this.allSections.innerHTML += this.song?.sections[this.currentSection].title;
+        this.allSections.innerHTML += section.title;
     }
 
     // private clearNextSection(): void {
