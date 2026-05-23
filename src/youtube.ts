@@ -36,6 +36,8 @@ export class YouTubePlayer {
     private timerId?: number;
     private currentSection = 0;
     private nextSection = 0;
+    private isSongReady = false;
+    public onSongReady?: (songEnd?: number) => void;
 
     constructor() {
         this.initializeEventHandlers();
@@ -132,12 +134,22 @@ export class YouTubePlayer {
         switch (event.data) {
         case YT.PlayerState.CUED:
             this.control.classList.remove('disabled');
+            this.notifySongReady();
             break;
 
         case YT.PlayerState.PLAYING:
             this.setCheckTimer();
             break;
         }
+    }
+
+    private notifySongReady(): void {
+        if (this.isSongReady) {
+            return;
+        }
+
+        this.isSongReady = true;
+        this.onSongReady?.(this.player?.getDuration());
     }
 
     // private duration(duration: number): string {
@@ -222,7 +234,7 @@ export class YouTubePlayer {
     private displayNextSection(section: SongSection): void {
         this.nextSectionTitle.innerText = section.title;
 
-        const duration = section.end - section.start;
+        const duration = section.end! - section.start;
         if (duration != 0) {
             this.nextSectionDuration.innerText = Utils.rightPadTo2Digits(duration);
         } else {
@@ -235,7 +247,7 @@ export class YouTubePlayer {
     private displayCurrentSection(section: SongSection): void {
         this.currentSectionTitle.innerText = section.title;
 
-        const duration = section.end - section.start;
+        const duration = section.end! - section.start;
         if (duration != 0) {
             this.currentSectionDuration.innerText = Utils.rightPadTo2Digits(duration);
         } else {

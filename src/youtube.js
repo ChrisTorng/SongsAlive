@@ -21,6 +21,8 @@ export class YouTubePlayer {
     timerId;
     currentSection = 0;
     nextSection = 0;
+    isSongReady = false;
+    onSongReady;
     constructor() {
         this.initializeEventHandlers();
     }
@@ -104,11 +106,19 @@ export class YouTubePlayer {
         switch (event.data) {
             case YT.PlayerState.CUED:
                 this.control.classList.remove('disabled');
+                this.notifySongReady();
                 break;
             case YT.PlayerState.PLAYING:
                 this.setCheckTimer();
                 break;
         }
+    }
+    notifySongReady() {
+        if (this.isSongReady) {
+            return;
+        }
+        this.isSongReady = true;
+        this.onSongReady?.(this.player?.getDuration());
     }
     // private duration(duration: number): string {
     //     const seconds = Math.round(duration % 60 * 1000) / 1000;

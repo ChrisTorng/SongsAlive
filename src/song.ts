@@ -2,12 +2,14 @@ export type SongSection = {
     title: string;
     detail: string;
     start: number;
-    end: number;
+    end?: number;
 };
 
 export type Song = {
     title: string;
     videoId: string;
+    end?: number;
+    duration?: number;
     sections: SongSection[];
 };
 
@@ -34,7 +36,8 @@ export class SongProcessor {
         }
     }
 
-    public processSong(song: Song): number {
+    public processSong(song: Song, songEnd?: number): number {
+        this.resolveSectionEnds(song, songEnd);
         this.setTitle(song);
         this.setSections(song);
         return song.sections.length - 1;
@@ -53,7 +56,7 @@ export class SongProcessor {
         this.addStopSection(song.sections);
 
         song.sections.forEach((section, index) => {
-            const duration = section.end - section.start;
+            const duration = section.end! - section.start;
             sectionsHtml += `<li class="selectSection" data-index="${index}" title="${section.detail}">
                 <div>${section.title}</div>
                 ${duration !== 0 ? `<div>${this.rightPadTo2Digits(duration)}</div>` : '<div>&nbsp;</div>'}
@@ -67,8 +70,41 @@ export class SongProcessor {
         }
     }
 
+    private resolveSectionEnds(song: Song, songEnd?: number): void {
+        this.removeStopSection(song.sections);
+
+        const finalEnd = [songEnd, song.end, song.duration]
+            .find((end): end is number => end !== undefined && end > 0);
+        song.sections.forEach((section, index) => {
+            if (section.end !== undefined) {
+                return;
+            }
+
+            const nextSection = song.sections[index + 1];
+            if (nextSection) {
+                section.end = nextSection.start;
+                return;
+            }
+
+            if (finalEnd !== undefined && finalEnd >= section.start) {
+                section.end = finalEnd;
+                return;
+            }
+
+            console.warn(`No end time found for section "${section.title}".`);
+            section.end = section.start;
+        });
+    }
+
     private addStopSection(sections: SongSection[]): void {
         sections.push({ title: '停止', detail: '', start: -1, end: -1 });
+    }
+
+    private removeStopSection(sections: SongSection[]): void {
+        const lastSection = sections[sections.length - 1];
+        if (lastSection?.start === -1 && lastSection.end === -1) {
+            sections.pop();
+        }
     }
 
     private rightPadTo2Digits(number: number): string {

@@ -155,6 +155,9 @@ export class YTPlayer {
     getCurrentTime() {
         return Utils.roundTo3Digits(this.player?.getCurrentTime() || 0);
     }
+    getDuration() {
+        return Utils.roundTo3Digits(this.player?.getDuration() || 0);
+    }
     timestamp() {
         var newTimestamp = new Date();
         const timestampText = `${newTimestamp.getMinutes()}:${newTimestamp.getSeconds()}.${Utils.padTo3Digits(newTimestamp.getMilliseconds())}`;

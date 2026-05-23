@@ -194,6 +194,10 @@ export class YTPlayer {
         return Utils.roundTo3Digits(this.player?.getCurrentTime() || 0);
     }
 
+    public getDuration(): number {
+        return Utils.roundTo3Digits(this.player?.getDuration() || 0);
+    }
+
     public timestamp(): string {
         var newTimestamp = new Date();
         const timestampText =

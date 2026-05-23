@@ -65,9 +65,11 @@ Open full screen before playing start.">□</button>
         window.setFullPlayer = (newPlayer) => youTubePlayer.setFullPlayer(newPlayer);
 
         const song = await songProcessor.process();
+        youTubePlayer.onSongReady = (songEnd) => {
+            songProcessor.processSong(song, songEnd);
+            youTubePlayer.setSelectSections();
+        };
         youTubePlayer.loadPlayer(song);
-        songProcessor.processSong(song);
-        youTubePlayer.setSelectSections();
     </script>
 </body>
 
